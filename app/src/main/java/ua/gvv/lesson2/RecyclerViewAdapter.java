@@ -14,9 +14,9 @@ import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
-    private List<String> records;
+    private List<Student> records;
 
-    public RecyclerViewAdapter(List<String> records) {
+    public RecyclerViewAdapter(List<Student> records) {
         this.records = records;
     }
 
@@ -28,9 +28,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
-        String record = records.get(i);
+        Student record = records.get(i);
         //viewHolder.name.setText(record.getName());
-        viewHolder.name.setText(record);
+        viewHolder.name.setText((CharSequence) record.getName());
     }
 
     @Override
