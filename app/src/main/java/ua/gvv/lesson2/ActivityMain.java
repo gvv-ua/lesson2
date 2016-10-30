@@ -80,8 +80,10 @@ public class ActivityMain extends AppCompatActivity {
                 Log.v("ActivityMain", "SWITCH:" + getNextFragmentId());
                 Bundle args = new Bundle();
                 args.putParcelableArrayList("StudentsList", students);
+                if (manager == null) {
+                    manager = getSupportFragmentManager();
+                }
                 Fragment fragment = (Fragment) manager.findFragmentById(getNextFragmentId());
-
                 if (fragment == null) {
                     if (current == 0) {
                         fragment = new FragmentRecyclerView();
@@ -91,7 +93,6 @@ public class ActivityMain extends AppCompatActivity {
                         current = 0;
                     }
                     fragment.setArguments(args);
-                    Log.v("ActivityMain", "SWITCH111");
                     FragmentTransaction transaction = manager.beginTransaction();
                     transaction.replace(R.id.activity_main, fragment)
                             .commit();
