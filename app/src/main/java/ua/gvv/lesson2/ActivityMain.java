@@ -5,7 +5,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -18,8 +17,6 @@ public class ActivityMain extends AppCompatActivity {
     private FragmentRecyclerView fragRecycler;
 
     private ArrayList<Student> students = new ArrayList<Student>(20);
-
-    private int current = 0;
 
     private void FillStudentsList() {
         students.add(new Student("Valerii Gubskyi", "https://plus.google.com/u/0/107910188078571144657", "https://github.com/gvv-ua"));
@@ -55,7 +52,7 @@ public class ActivityMain extends AppCompatActivity {
 
             manager = getSupportFragmentManager();
             FragmentTransaction transaction = manager.beginTransaction();
-            transaction.add(R.id.activity_main, fragment)
+            transaction.add(R.id.activity_main, fragment, "CurrentFragment")
                     .commit();
         }
     }
@@ -67,8 +64,12 @@ public class ActivityMain extends AppCompatActivity {
         return true;
     }
 
-    private int getNextFragmentId() {
-        return (current == 0) ? R.id.recyclerview_lesson2 : R.id.listview_lesson2;
+    private Fragment getNextFragment() {
+        if (manager == null) {
+            manager = getSupportFragmentManager();
+        }
+        Fragment fragment = manager.findFragmentByTag("CurrentFragment");
+        return (fragment instanceof FragmentRecyclerView) ? new FragmentListView() : new FragmentRecyclerView();
     }
 
     @Override
@@ -76,29 +77,14 @@ public class ActivityMain extends AppCompatActivity {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.action_switch:
-                Log.v("ActivityMain", "SWITCH");
-                Log.v("ActivityMain", "SWITCH:" + getNextFragmentId());
                 Bundle args = new Bundle();
                 args.putParcelableArrayList("StudentsList", students);
-                if (manager == null) {
-                    manager = getSupportFragmentManager();
-                }
-                Fragment fragment = (Fragment) manager.findFragmentById(getNextFragmentId());
-                if (fragment == null) {
-                    if (current == 0) {
-                        fragment = new FragmentRecyclerView();
-                        current = 1;
-                    } else {
-                        fragment = new FragmentListView();
-                        current = 0;
-                    }
-                    fragment.setArguments(args);
-                    FragmentTransaction transaction = manager.beginTransaction();
-                    transaction.replace(R.id.activity_main, fragment)
-                            .commit();
+                Fragment fragment = getNextFragment();
 
-                }
-
+                fragment.setArguments(args);
+                FragmentTransaction transaction = manager.beginTransaction();
+                transaction.replace(R.id.activity_main, fragment, "CurrentFragment")
+                        .commit();
                 return true;
         }
         return super.onOptionsItemSelected(item);

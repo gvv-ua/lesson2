@@ -3,9 +3,17 @@
              android:orientation="vertical"
              android:layout_width="match_parent"
              android:layout_height="match_parent">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:text="ListView"
+        android:textAlignment="center"
+        />
 
     <ListView
         android:id="@+id/listview_lesson2"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_marginTop="30dp"
+        />
 </FrameLayout>
