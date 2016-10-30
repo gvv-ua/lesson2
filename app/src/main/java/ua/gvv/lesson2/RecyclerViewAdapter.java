@@ -3,8 +3,10 @@ package ua.gvv.lesson2;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -41,6 +43,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return list.size();
     }
 
+    private void deleteItemByIndex(int position) {
+        list.remove(position);
+        notifyDataSetChanged();
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder  implements View.OnClickListener, View.OnLongClickListener {
         private TextView name;
         private Button button;
@@ -60,8 +67,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         @Override
         public boolean onLongClick(View v) {
-            Log.v("RecyclerViewAdapter", "PRESSLONG:" + String.valueOf(getAdapterPosition()));
-            return false;
+            //Toast toast = Toast.makeText(v.getContext(), "Delete!", Toast.LENGTH_SHORT);
+            //toast.show();
+            ActionMode actionMode = v.startActionMode(new ActionBarCallBack());
+            actionMode.setTag(getAdapterPosition());
+            return true;
         }
 
         public ViewHolder(View itemView) {
@@ -71,6 +81,38 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             itemView.setOnClickListener(this);
             name.setOnClickListener(this);
             button.setOnClickListener(this);
+
+            itemView.setOnLongClickListener(this);
+            name.setOnLongClickListener(this);
+            button.setOnLongClickListener(this);
+
+        }
+
+    }
+
+    class ActionBarCallBack implements ActionMode.Callback {
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            int position = Integer.parseInt(mode.getTag().toString());
+            deleteItemByIndex(position);
+            mode.finish();
+            return true;
+        }
+
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            mode.getMenuInflater().inflate(R.menu.menu_cab, menu);
+            return true;
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
         }
     }
 }
