@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,17 @@ public class FragmentRecyclerView extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Bundle extras = getArguments();
+        if (extras != null) {
+            ArrayList<Student> students  = extras.getParcelableArrayList("StudentsList");
+            if (students != null) {
+                Log.v("FragmentRecyclerView", "STUDENT222");
+                Student student = students.get(0);
+                Log.v("FragmentRecyclerView", "STUDENT:" + student.getName());
+            }
+        }
+
+
 
         ArrayList<String> fakeData = new ArrayList<String>(Arrays.asList(new String[]{
                 "Today - light cloud, no precipitation - 0/+8",

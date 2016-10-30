@@ -10,22 +10,41 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import java.util.ArrayList;
+
 public class ActivityMain extends AppCompatActivity {
     private FragmentManager manager;
     private FragmentListView fragList;
     private FragmentRecyclerView fragRecycler;
 
+    private ArrayList<Student> students = new ArrayList<Student>(20);
+
     private int current = 0;
+
+    private void FillStudentsList() {
+        students.add(new Student("Valerii Gubskyi", "https://plus.google.com/u/0/107910188078571144657", "https://github.com/gvv-ua"));
+        students.add(new Student("Valerii Gubskyi", "https://plus.google.com/u/0/107910188078571144657", "https://github.com/gvv-ua"));
+        students.add(new Student("Valerii Gubskyi", "https://plus.google.com/u/0/107910188078571144657", "https://github.com/gvv-ua"));
+        students.add(new Student("Valerii Gubskyi", "https://plus.google.com/u/0/107910188078571144657", "https://github.com/gvv-ua"));
+        students.add(new Student("Valerii Gubskyi", "https://plus.google.com/u/0/107910188078571144657", "https://github.com/gvv-ua"));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        FillStudentsList();
+
         if (savedInstanceState == null) {
+            Bundle args = new Bundle();
+            args.putParcelableArrayList("StudentsList", students);
+            Fragment fragment = new FragmentListView();
+            fragment.setArguments(args);
+
             manager = getSupportFragmentManager();
             FragmentTransaction transaction = manager.beginTransaction();
-            transaction.add(R.id.activity_main, new FragmentListView())
+            transaction.add(R.id.activity_main, fragment)
                     .commit();
         }
     }
@@ -48,7 +67,10 @@ public class ActivityMain extends AppCompatActivity {
             case R.id.action_switch:
                 Log.v("ActivityMain", "SWITCH");
                 Log.v("ActivityMain", "SWITCH:" + getNextFragmentId());
+                Bundle args = new Bundle();
+                args.putParcelableArrayList("StudentsList", students);
                 Fragment fragment = (Fragment) manager.findFragmentById(getNextFragmentId());
+
                 if (fragment == null) {
                     if (current == 0) {
                         fragment = new FragmentRecyclerView();
@@ -57,7 +79,7 @@ public class ActivityMain extends AppCompatActivity {
                         fragment = new FragmentListView();
                         current = 0;
                     }
-
+                    fragment.setArguments(args);
                     Log.v("ActivityMain", "SWITCH111");
                     FragmentTransaction transaction = manager.beginTransaction();
                     transaction.replace(R.id.activity_main, fragment)
