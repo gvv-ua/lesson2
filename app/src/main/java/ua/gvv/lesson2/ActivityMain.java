@@ -23,10 +23,21 @@ public class ActivityMain extends AppCompatActivity {
 
     private void FillStudentsList() {
         students.add(new Student("Valerii Gubskyi", "https://plus.google.com/u/0/107910188078571144657", "https://github.com/gvv-ua"));
-        students.add(new Student("Valerii Gubskyi", "https://plus.google.com/u/0/107910188078571144657", "https://github.com/gvv-ua"));
-        students.add(new Student("Valerii Gubskyi", "https://plus.google.com/u/0/107910188078571144657", "https://github.com/gvv-ua"));
-        students.add(new Student("Valerii Gubskyi", "https://plus.google.com/u/0/107910188078571144657", "https://github.com/gvv-ua"));
-        students.add(new Student("Valerii Gubskyi", "https://plus.google.com/u/0/107910188078571144657", "https://github.com/gvv-ua"));
+        students.add(new Student("Valerii Gubskyi1", "https://plus.google.com/u/0/107910188078571144657", "https://github.com/gvv-ua"));
+        students.add(new Student("Valerii Gubskyi2", "https://plus.google.com/u/0/107910188078571144657", "https://github.com/gvv-ua"));
+        students.add(new Student("Valerii Gubskyi3", "https://plus.google.com/u/0/107910188078571144657", "https://github.com/gvv-ua"));
+        students.add(new Student("Valerii Gubskyi4", "https://plus.google.com/u/0/107910188078571144657", "https://github.com/gvv-ua"));
+        students.add(new Student("Valerii Gubskyi5", "https://plus.google.com/u/0/107910188078571144657", "https://github.com/gvv-ua"));
+        students.add(new Student("Valerii Gubskyi6", "https://plus.google.com/u/0/107910188078571144657", "https://github.com/gvv-ua"));
+        students.add(new Student("Valerii Gubskyi7", "https://plus.google.com/u/0/107910188078571144657", "https://github.com/gvv-ua"));
+        students.add(new Student("Valerii Gubskyi8", "https://plus.google.com/u/0/107910188078571144657", "https://github.com/gvv-ua"));
+        students.add(new Student("Valerii Gubskyi9", "https://plus.google.com/u/0/107910188078571144657", "https://github.com/gvv-ua"));
+        students.add(new Student("Valerii Gubskyi10", "https://plus.google.com/u/0/107910188078571144657", "https://github.com/gvv-ua"));
+        students.add(new Student("Valerii Gubskyi11", "https://plus.google.com/u/0/107910188078571144657", "https://github.com/gvv-ua"));
+        students.add(new Student("Valerii Gubskyi12", "https://plus.google.com/u/0/107910188078571144657", "https://github.com/gvv-ua"));
+        students.add(new Student("Valerii Gubskyi13", "https://plus.google.com/u/0/107910188078571144657", "https://github.com/gvv-ua"));
+        students.add(new Student("Valerii Gubskyi14", "https://plus.google.com/u/0/107910188078571144657", "https://github.com/gvv-ua"));
+
     }
 
     @Override
