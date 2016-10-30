@@ -18,10 +18,10 @@ import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
-    private List<Student> records;
+    private List<Student> list;
 
     public RecyclerViewAdapter(List<Student> records) {
-        this.records = records;
+        this.list = records;
     }
 
     @Override
@@ -32,13 +32,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
-        Student record = records.get(i);
+        Student record = list.get(i);
         viewHolder.name.setText((CharSequence) record.getName());
     }
 
     @Override
     public int getItemCount() {
-        return records.size();
+        return list.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder  implements View.OnClickListener, View.OnLongClickListener {
@@ -48,11 +48,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         @Override
         public void onClick(View v) {
             if (v.getId() == name.getId()) {
-                Student student = records.get(getAdapterPosition());
+                Student student = list.get(getAdapterPosition());
                 Intent intent= new Intent(Intent.ACTION_VIEW, Uri.parse(student.getGithubLinkleLink()));
                 v.getContext().startActivity(intent);
             } else if (v.getId() == button.getId()) {
-                Student student = records.get(getAdapterPosition());
+                Student student = list.get(getAdapterPosition());
                 Intent intent= new Intent(Intent.ACTION_VIEW, Uri.parse(student.getGoogleLink()));
                 v.getContext().startActivity(intent);
             }
