@@ -33,7 +33,8 @@ public class FragmentRecyclerView extends Fragment {
         RecyclerView recyclerView = (RecyclerView)rootView.findViewById(R.id.recyclerview_lesson2);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        RecyclerViewAdapter adapter = new RecyclerViewAdapter(students);
+        //RecyclerViewAdapter adapter = new RecyclerViewAdapter(students);
+        RecyclerViewAdapter adapter = new RecyclerViewAdapter(getContext(), students);
         recyclerView.setAdapter(adapter);
         return rootView;
     }

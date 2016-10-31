@@ -1,5 +1,6 @@
 package ua.gvv.lesson2;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -21,9 +23,15 @@ import java.util.List;
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
     private List<Student> list;
+    private Context context;
 
     public RecyclerViewAdapter(List<Student> records) {
         this.list = records;
+    }
+
+    public RecyclerViewAdapter(Context context, List<Student> list) {
+        this.context = context;
+        this.list = list;
     }
 
     @Override
@@ -44,8 +52,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     private void deleteItemByIndex(int position) {
+        Student student = list.get(position);
         list.remove(position);
         notifyDataSetChanged();
+        Toast toast = Toast.makeText(context, student.getName() + " has been deleted from list!", Toast.LENGTH_SHORT);
+        toast.show();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder  implements View.OnClickListener, View.OnLongClickListener {
@@ -67,8 +78,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         @Override
         public boolean onLongClick(View v) {
-            //Toast toast = Toast.makeText(v.getContext(), "Delete!", Toast.LENGTH_SHORT);
-            //toast.show();
             ActionMode actionMode = v.startActionMode(new ActionBarCallBack());
             actionMode.setTag(getAdapterPosition());
             return true;

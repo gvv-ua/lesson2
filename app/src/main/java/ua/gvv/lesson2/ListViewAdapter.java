@@ -13,6 +13,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -53,7 +54,6 @@ public class ListViewAdapter extends BaseAdapter implements ListAdapter {
         }
 
         TextView listItemText = (TextView)row.findViewById(R.id.list_item_textview);
-//        Log.v("FragmentListView", "STUDENT111:" + listItemText.getId());
         listItemText.setText(list.get(position).getName());
 
         //Handle buttons and add onClickListeners
@@ -83,8 +83,11 @@ public class ListViewAdapter extends BaseAdapter implements ListAdapter {
     }
 
     private void deleteItemByIndex(int position) {
+        Student student = list.get(position);
         list.remove(position);
         notifyDataSetChanged();
+        Toast toast = Toast.makeText(context, student.getName() + " has been deleted from list!", Toast.LENGTH_SHORT);
+        toast.show();
     }
 
     class LongClcik implements View.OnLongClickListener {
