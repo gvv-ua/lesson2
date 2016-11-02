@@ -4,15 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
-import android.view.ActionMode;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.support.design.widget.Snackbar;
 
 import java.util.List;
 
@@ -78,8 +76,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         @Override
         public boolean onLongClick(View v) {
-            ActionMode actionMode = v.startActionMode(new ActionBarCallBack());
-            actionMode.setTag(getAdapterPosition());
+            String studentName = list.get(getAdapterPosition()).getName();
+            Snackbar snackbar = Snackbar.make(v, studentName, Snackbar.LENGTH_LONG);
+            snackbar.setAction(R.string.action_delete, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    deleteItemByIndex(getAdapterPosition());
+                }
+            });
+            snackbar.show();
             return true;
         }
 
@@ -94,35 +99,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             itemView.setOnLongClickListener(this);
             name.setOnLongClickListener(this);
             button.setOnLongClickListener(this);
-
-        }
-
-    }
-
-    class ActionBarCallBack implements ActionMode.Callback {
-
-        @Override
-        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-            int position = Integer.parseInt(mode.getTag().toString());
-            deleteItemByIndex(position);
-            mode.finish();
-            return true;
-        }
-
-        @Override
-        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-            mode.getMenuInflater().inflate(R.menu.menu_cab, menu);
-            return true;
-        }
-
-        @Override
-        public void onDestroyActionMode(ActionMode mode) {
-        }
-
-        @Override
-        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            return false;
         }
     }
+
 }
 

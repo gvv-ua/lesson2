@@ -3,10 +3,8 @@ package ua.gvv.lesson2;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.view.ActionMode;
+import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -98,35 +96,16 @@ public class ListViewAdapter extends BaseAdapter implements ListAdapter {
         }
 
         public boolean onLongClick(View v) {
-            ActionMode actionMode = v.startActionMode(new ListViewAdapter.ActionBarCallBack());
-            actionMode.setTag(position);
+            String studentName = list.get(position).getName();
+            Snackbar snackbar = Snackbar.make(v, studentName, Snackbar.LENGTH_LONG);
+            snackbar.setAction(R.string.action_delete, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    deleteItemByIndex(position);
+                }
+            });
+            snackbar.show();
             return true;
-        }
-    }
-
-    class ActionBarCallBack implements ActionMode.Callback {
-
-        @Override
-        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-            int position = Integer.parseInt(mode.getTag().toString());
-            deleteItemByIndex(position);
-            mode.finish();
-            return true;
-        }
-
-        @Override
-        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-            mode.getMenuInflater().inflate(R.menu.menu_cab, menu);
-            return true;
-        }
-
-        @Override
-        public void onDestroyActionMode(ActionMode mode) {
-        }
-
-        @Override
-        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            return false;
         }
     }
 }
