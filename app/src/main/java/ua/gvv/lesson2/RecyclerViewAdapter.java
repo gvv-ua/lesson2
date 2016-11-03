@@ -59,7 +59,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private void showDetailInfo(int apiType, String link) {
         Intent intent = new Intent((ActivityMain)context, ActivityDetail.class)
                 .putExtra(ActivityDetail.API_TYPE, apiType)
-                .putExtra(Intent.EXTRA_TEXT, link);
+                .putExtra(ActivityDetail.USER, link);
         context.startActivity(intent);
     }
 
@@ -71,7 +71,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         public void onClick(View v) {
             if (v.getId() == name.getId()) {
                 Student student = list.get(getAdapterPosition());
-                showDetailInfo(ActivityDetail.API_GIT_HUB, student.getGithubLinkleLink());
+                showDetailInfo(ActivityDetail.API_GIT_HUB, student.getGitHubName());
             } else if (v.getId() == button.getId()) {
                 Student student = list.get(getAdapterPosition());
                 showDetailInfo(ActivityDetail.API_GOOGLE_PLUS, student.getGoogleLink());

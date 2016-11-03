@@ -6,6 +6,7 @@
              tools:context="ua.gvv.lesson2.FragmentGitHubInfo">
 
         <TextView
+            android:id="@+id/git_hub_user_name"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="hello_git_hub"/>

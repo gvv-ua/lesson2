@@ -13,7 +13,10 @@ public class ActivityDetail extends AppCompatActivity {
     public static final int API_GIT_HUB = 1;
     public static final int API_GOOGLE_PLUS = 2;
 
+    public static final String USER = "user";
+
     private int apiType = API_WRONG;
+    private String user = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +26,7 @@ public class ActivityDetail extends AppCompatActivity {
         Intent intent = getIntent();
         if ((intent != null) && (intent.hasExtra(API_TYPE))) {
             apiType = intent.getIntExtra(API_TYPE, API_WRONG);
+            user = intent.getStringExtra(USER);
         }
         if (apiType != API_WRONG) {
             FragmentManager manager = getSupportFragmentManager();
@@ -30,16 +34,15 @@ public class ActivityDetail extends AppCompatActivity {
             Fragment fragment;
             if (apiType == API_GIT_HUB) {
                 fragment = new FragmentGitHubInfo();
+                Bundle bundle = new Bundle();
+                bundle.putString(USER, user);
+                fragment.setArguments(bundle);
                 transaction.add(R.id.activity_detail, fragment, "CurrentFragment").commit();
             } else if (apiType == API_GOOGLE_PLUS) {
                 fragment = new FragmentGooglePlusInfo();
                 transaction.add(R.id.activity_detail, fragment, "CurrentFragment").commit();
             }
         }
-
-//        TextView view = (TextView)findViewById(R.id.detail_text_view);
-//        view.setText("Hello");
-
-
     }
+
 }

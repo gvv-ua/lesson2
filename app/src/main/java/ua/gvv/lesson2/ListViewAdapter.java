@@ -59,7 +59,7 @@ public class ListViewAdapter extends BaseAdapter implements ListAdapter {
             @Override
             public void onClick(View v) {
                 Student student = list.get(position);
-                showDetailInfo(ActivityDetail.API_GIT_HUB, student.getGithubLinkleLink());
+                showDetailInfo(ActivityDetail.API_GIT_HUB, student.getGitHubName());
             }
         });
 
@@ -88,7 +88,7 @@ public class ListViewAdapter extends BaseAdapter implements ListAdapter {
     private void showDetailInfo(int apiType, String link) {
         Intent intent = new Intent((ActivityMain)context, ActivityDetail.class)
                 .putExtra(ActivityDetail.API_TYPE, apiType)
-                .putExtra(Intent.EXTRA_TEXT, link);
+                .putExtra(ActivityDetail.USER, link);
         context.startActivity(intent);
     }
 

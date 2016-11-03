@@ -10,7 +10,7 @@ import android.os.Parcelable;
 public class Student implements Parcelable {
     private String name;
     private String googleLink;
-    private String githubLink;
+    private String gitHubName;
 
     public Student(Parcel in) {
         super();
@@ -20,7 +20,7 @@ public class Student implements Parcelable {
     Student(String name, String googleLink, String githubLink) {
         this.name = name;
         this.googleLink = googleLink;
-        this.githubLink = githubLink;
+        this.gitHubName = githubLink;
     }
 
     @Override
@@ -32,13 +32,13 @@ public class Student implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
         dest.writeString(googleLink);
-        dest.writeString(githubLink);
+        dest.writeString(gitHubName);
     }
 
     public void readFromParcel(Parcel in) {
         name = in.readString();
         googleLink = in.readString();
-        githubLink = in.readString();
+        gitHubName = in.readString();
     }
 
     public static final Parcelable.Creator<Student> CREATOR = new Parcelable.Creator<Student>() {
@@ -59,8 +59,8 @@ public class Student implements Parcelable {
         return this.googleLink;
     }
 
-    public String getGithubLinkleLink() {
-        return this.githubLink;
+    public String getGitHubName() {
+        return this.gitHubName;
     }
 
 }
