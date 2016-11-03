@@ -9,7 +9,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="ua.gvv.lesson2.ActivityMain">
+    tools:context="ua.gvv.studentlist.ActivityMain">
 
 
 </RelativeLayout>

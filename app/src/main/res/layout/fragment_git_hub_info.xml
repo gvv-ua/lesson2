@@ -4,7 +4,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical"
-              tools:context="ua.gvv.lesson2.FragmentGitHubInfo">
+              tools:context="ua.gvv.studentlist.FragmentGitHubInfo">
 
     <ImageView
         android:id="@+id/git_hub_user_avatar"

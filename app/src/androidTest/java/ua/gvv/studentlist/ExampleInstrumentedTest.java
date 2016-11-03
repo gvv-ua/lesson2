@@ -1,4 +1,4 @@
-package ua.gvv.lesson2;
+package ua.gvv.studentlist;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

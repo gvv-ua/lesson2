@@ -1,4 +1,4 @@
-package ua.gvv.lesson2;
+package ua.gvv.studentlist;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

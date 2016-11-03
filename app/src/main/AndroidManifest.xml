@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="ua.gvv.lesson2">
+          package="ua.gvv.studentlist">
 
     <uses-permission android:name="android.permission.INTERNET"/>
 
@@ -10,7 +10,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ActivityMain"
+        <activity android:name="ua.gvv.studentlist.ActivityMain"
                   android:launchMode="singleTop"
             >
             <intent-filter>
@@ -19,13 +19,13 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".ActivityDetail"
+        <activity android:name="ua.gvv.studentlist.ActivityDetail"
                   android:label="@string/title_detail"
-                  android:parentActivityName=".ActivityMain"
+                  android:parentActivityName="ua.gvv.studentlist.ActivityMain"
                   android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="ua.gvv.lesson2.ActivityMain"/>
+                android:value="ua.gvv.studentlist.ActivityMain"/>
         </activity>
     </application>
 

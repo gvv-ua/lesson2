@@ -1,4 +1,4 @@
-package ua.gvv.lesson2;
+package ua.gvv.studentlist;
 
 import android.os.Parcel;
 import android.os.Parcelable;

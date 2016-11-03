@@ -1,4 +1,4 @@
-package ua.gvv.lesson2;
+package ua.gvv.studentlist;
 
 import android.content.Intent;
 import android.os.Bundle;

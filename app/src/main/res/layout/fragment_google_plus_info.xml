@@ -3,7 +3,7 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             tools:context="ua.gvv.lesson2.FragmentGooglePlusInfo">
+             tools:context="ua.gvv.studentlist.FragmentGooglePlusInfo">
 
     <TextView
         android:layout_width="match_parent"

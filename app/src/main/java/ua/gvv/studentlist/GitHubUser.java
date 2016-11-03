@@ -1,4 +1,4 @@
-package ua.gvv.lesson2;
+package ua.gvv.studentlist;
 
 /**
  * Created by gvv on 03.11.16.
