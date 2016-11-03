@@ -2,7 +2,7 @@ package ua.gvv.lesson2;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.support.design.widget.Snackbar;
 
 import java.util.List;
 
@@ -57,6 +56,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         toast.show();
     }
 
+    private void showDetailInfo(int apiType, String link) {
+        Intent intent = new Intent((ActivityMain)context, ActivityDetail.class)
+                .putExtra(ActivityDetail.API_TYPE, apiType)
+                .putExtra(Intent.EXTRA_TEXT, link);
+        context.startActivity(intent);
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder  implements View.OnClickListener, View.OnLongClickListener {
         private TextView name;
         private Button button;
@@ -65,12 +71,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         public void onClick(View v) {
             if (v.getId() == name.getId()) {
                 Student student = list.get(getAdapterPosition());
-                Intent intent= new Intent(Intent.ACTION_VIEW, Uri.parse(student.getGithubLinkleLink()));
-                v.getContext().startActivity(intent);
+                showDetailInfo(ActivityDetail.API_GIT_HUB, student.getGithubLinkleLink());
             } else if (v.getId() == button.getId()) {
                 Student student = list.get(getAdapterPosition());
-                Intent intent= new Intent(Intent.ACTION_VIEW, Uri.parse(student.getGoogleLink()));
-                v.getContext().startActivity(intent);
+                showDetailInfo(ActivityDetail.API_GOOGLE_PLUS, student.getGoogleLink());
             }
         }
 

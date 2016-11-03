@@ -12,7 +12,12 @@ import android.view.MenuItem;
 import java.util.ArrayList;
 
 public class ActivityMain extends AppCompatActivity {
-    private FragmentManager manager;
+    private static final String FRAGMENT_CURRENT = "CurrentFragment";
+    private static final int FRAGMENT_LIST_VIEW = 1;
+    private static final int FRAGMENT_RECYCLER_VIEW = 2;
+
+    private int currentFragment = FRAGMENT_LIST_VIEW;
+
     private FragmentListView fragList;
     private FragmentRecyclerView fragRecycler;
 
@@ -44,21 +49,29 @@ public class ActivityMain extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
+        setContentView(R.layout.activity_main);
         FillStudentsList();
 
-        if (savedInstanceState == null) {
-            Bundle args = new Bundle();
-            args.putParcelableArrayList("StudentsList", students);
-            Fragment fragment = new FragmentListView();
-            fragment.setArguments(args);
-
-            manager = getSupportFragmentManager();
-            FragmentTransaction transaction = manager.beginTransaction();
-            transaction.add(R.id.activity_main, fragment, "CurrentFragment")
-                    .commit();
+        if (savedInstanceState != null) {
+            currentFragment = savedInstanceState.getInt(FRAGMENT_CURRENT);
         }
+
+        Bundle args = new Bundle();
+        args.putParcelableArrayList("StudentsList", students);
+        Fragment fragment = getFragmentByType(currentFragment);
+        fragment.setArguments(args);
+
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        transaction.add(R.id.activity_main, fragment, "CurrentFragment")
+                .commit();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(FRAGMENT_CURRENT, currentFragment);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -68,12 +81,12 @@ public class ActivityMain extends AppCompatActivity {
         return true;
     }
 
-    private Fragment getNextFragment() {
-        if (manager == null) {
-            manager = getSupportFragmentManager();
-        }
-        Fragment fragment = manager.findFragmentByTag("CurrentFragment");
-        return (fragment instanceof FragmentRecyclerView) ? new FragmentListView() : new FragmentRecyclerView();
+    private Fragment getFragmentByType(int fragmentType) {
+        return (fragmentType == FRAGMENT_RECYCLER_VIEW) ? new FragmentRecyclerView() : new FragmentListView();
+    }
+
+    private int getNextFragmentType() {
+        return (currentFragment == FRAGMENT_RECYCLER_VIEW) ? FRAGMENT_LIST_VIEW : FRAGMENT_RECYCLER_VIEW;
     }
 
     @Override
@@ -83,9 +96,11 @@ public class ActivityMain extends AppCompatActivity {
             case R.id.action_switch:
                 Bundle args = new Bundle();
                 args.putParcelableArrayList("StudentsList", students);
-                Fragment fragment = getNextFragment();
+                currentFragment = getNextFragmentType();
+                Fragment fragment = getFragmentByType(currentFragment);
 
                 fragment.setArguments(args);
+                FragmentManager manager = getSupportFragmentManager();
                 FragmentTransaction transaction = manager.beginTransaction();
                 transaction.replace(R.id.activity_main, fragment, "CurrentFragment")
                         .commit();

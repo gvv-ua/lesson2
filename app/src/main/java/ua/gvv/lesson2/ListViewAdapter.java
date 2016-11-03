@@ -2,7 +2,6 @@ package ua.gvv.lesson2;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,8 +59,7 @@ public class ListViewAdapter extends BaseAdapter implements ListAdapter {
             @Override
             public void onClick(View v) {
                 Student student = list.get(position);
-                Intent intent= new Intent(Intent.ACTION_VIEW, Uri.parse(student.getGithubLinkleLink()));
-                v.getContext().startActivity(intent);
+                showDetailInfo(ActivityDetail.API_GIT_HUB, student.getGithubLinkleLink());
             }
         });
 
@@ -69,8 +67,7 @@ public class ListViewAdapter extends BaseAdapter implements ListAdapter {
             @Override
             public void onClick(View v) {
                 Student student = list.get(position);
-                Intent intent= new Intent(Intent.ACTION_VIEW, Uri.parse(student.getGoogleLink()));
-                v.getContext().startActivity(intent);
+                showDetailInfo(ActivityDetail.API_GOOGLE_PLUS, student.getGoogleLink());
             }
         });
 
@@ -86,6 +83,13 @@ public class ListViewAdapter extends BaseAdapter implements ListAdapter {
         notifyDataSetChanged();
         Toast toast = Toast.makeText(context, student.getName() + " has been deleted from list!", Toast.LENGTH_SHORT);
         toast.show();
+    }
+
+    private void showDetailInfo(int apiType, String link) {
+        Intent intent = new Intent((ActivityMain)context, ActivityDetail.class)
+                .putExtra(ActivityDetail.API_TYPE, apiType)
+                .putExtra(Intent.EXTRA_TEXT, link);
+        context.startActivity(intent);
     }
 
     class LongClcik implements View.OnLongClickListener {
