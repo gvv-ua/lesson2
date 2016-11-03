@@ -1,14 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             tools:context="ua.gvv.lesson2.FragmentGitHubInfo">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              tools:context="ua.gvv.lesson2.FragmentGitHubInfo">
 
-        <TextView
-            android:id="@+id/git_hub_user_name"
+    <ImageView
+        android:id="@+id/git_hub_user_avatar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="hello_git_hub"/>
+        android:layout_height="200dp"/>
 
-</FrameLayout>
+    <TextView
+        android:id="@+id/git_hub_user_name"
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/git_hub_user_login"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:textAlignment="center"
+        android:textSize="16sp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/git_hub_user_location"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:textAlignment="center"
+        android:textSize="16sp"
+        />
+
+</LinearLayout>

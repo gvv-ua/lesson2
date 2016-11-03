@@ -1,6 +1,9 @@
 package ua.gvv.lesson2;
 
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,11 +11,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -77,8 +83,19 @@ public class FragmentGitHubInfo extends Fragment implements Callback {
     }
 
     private void showDetailInfo(GitHubUser gitHubUser) {
-        TextView view = (TextView)getView().findViewById(R.id.git_hub_user_name);
+        View root = getView();
+        TextView view = (TextView)root.findViewById(R.id.git_hub_user_name);
         view.setText(gitHubUser.name);
+
+        view = (TextView)root.findViewById(R.id.git_hub_user_login);
+        view.setText(gitHubUser.login);
+
+        view = (TextView)root.findViewById(R.id.git_hub_user_location);
+        view.setText(gitHubUser.location);
+
+        ImageView avatar = (ImageView)root.findViewById(R.id.git_hub_user_avatar);
+        new DownLoadImageTask(avatar).execute(gitHubUser.avatarUrl);
+
     }
 
     public void requestInfo(String user) throws IOException {
@@ -92,5 +109,33 @@ public class FragmentGitHubInfo extends Fragment implements Callback {
                 .url(url)
                 .build();
         client.newCall(request).enqueue(this);
+    }
+
+    private class DownLoadImageTask extends AsyncTask<String,Void,Bitmap> {
+        ImageView imageView;
+
+        public DownLoadImageTask(ImageView imageView){
+            this.imageView = imageView;
+        }
+
+        protected Bitmap doInBackground(String...urls){
+            String urlOfImage = urls[0];
+            Bitmap logo = null;
+            try{
+                InputStream is = new URL(urlOfImage).openStream();
+                /*
+                    decodeStream(InputStream is)
+                        Decode an input stream into a bitmap.
+                 */
+                logo = BitmapFactory.decodeStream(is);
+            }catch(Exception e){ // Catch the download exception
+                e.printStackTrace();
+            }
+            return logo;
+        }
+
+        protected void onPostExecute(Bitmap result){
+            imageView.setImageBitmap(result);
+        }
     }
 }
