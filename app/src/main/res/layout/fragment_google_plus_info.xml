@@ -27,4 +27,13 @@
         android:textSize="16sp"
         android:textStyle="bold"/>
 
+    <Button
+        android:id="@+id/google_plus_open_url"
+        android:text="@string/open_title"
+        android:layout_width="wrap_content"
+        android:textAlignment="center"
+        android:layout_gravity="center"
+        android:layout_height="50dp"
+        />
+
 </LinearLayout>

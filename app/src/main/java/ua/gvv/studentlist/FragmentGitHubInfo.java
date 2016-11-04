@@ -1,8 +1,10 @@
 package ua.gvv.studentlist;
 
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -82,8 +85,12 @@ public class FragmentGitHubInfo extends Fragment implements Callback {
         });
     }
 
-    private void showDetailInfo(GitHubUser gitHubUser) {
+    private void showDetailInfo(final GitHubUser gitHubUser) {
         View root = getView();
+
+        ImageView avatar = (ImageView) root.findViewById(R.id.git_hub_user_avatar);
+        new DownLoadImageTask(avatar).execute(gitHubUser.getAvatarUrl());
+
         TextView view = (TextView) root.findViewById(R.id.git_hub_user_name);
         view.setText(gitHubUser.getName());
 
@@ -93,8 +100,14 @@ public class FragmentGitHubInfo extends Fragment implements Callback {
         view = (TextView) root.findViewById(R.id.git_hub_user_location);
         view.setText(gitHubUser.getLocation());
 
-        ImageView avatar = (ImageView) root.findViewById(R.id.git_hub_user_avatar);
-        new DownLoadImageTask(avatar).execute(gitHubUser.getAvatarUrl());
+        Button button = (Button) root.findViewById(R.id.git_hub_open_url);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent= new Intent(Intent.ACTION_VIEW, Uri.parse(gitHubUser.getUrl()));
+                v.getContext().startActivity(intent);
+            }
+        });
 
     }
 

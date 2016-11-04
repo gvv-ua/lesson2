@@ -1,7 +1,9 @@
 package ua.gvv.studentlist;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -77,16 +80,26 @@ public class FragmentGooglePlusInfo extends Fragment implements Callback {
         });
     }
 
-    private void showDetailInfo(GooglePlusUser googlePlusUser) {
+    private void showDetailInfo(final GooglePlusUser googlePlusUser) {
         View root = getView();
+
+        ImageView avatar = (ImageView) root.findViewById(R.id.google_plus_user_avatar);
+        new FragmentGooglePlusInfo.DownLoadImageTask(avatar).execute(getAvatarUrl(googlePlusUser.getImage().getAvatarUrl(), 200));
+
         TextView view = (TextView) root.findViewById(R.id.google_plus_user_name);
         view.setText(googlePlusUser.getName());
 
         view = (TextView) root.findViewById(R.id.google_plus_user_gender);
         view.setText(googlePlusUser.getGender());
 
-        ImageView avatar = (ImageView) root.findViewById(R.id.google_plus_user_avatar);
-        new FragmentGooglePlusInfo.DownLoadImageTask(avatar).execute(getAvatarUrl(googlePlusUser.getImage().getAvatarUrl(), 200));
+        Button button = (Button) root.findViewById(R.id.google_plus_open_url);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent= new Intent(Intent.ACTION_VIEW, Uri.parse(googlePlusUser.getUrl()));
+                v.getContext().startActivity(intent);
+            }
+        });
     }
 
     private String getAvatarUrl(String defaultUrl, int size) {
