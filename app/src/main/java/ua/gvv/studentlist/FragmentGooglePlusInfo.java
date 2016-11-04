@@ -80,13 +80,13 @@ public class FragmentGooglePlusInfo extends Fragment implements Callback {
     private void showDetailInfo(GooglePlusUser googlePlusUser) {
         View root = getView();
         TextView view = (TextView) root.findViewById(R.id.google_plus_user_name);
-        view.setText(googlePlusUser.name);
+        view.setText(googlePlusUser.getName());
 
         view = (TextView) root.findViewById(R.id.google_plus_user_gender);
-        view.setText(googlePlusUser.gender);
+        view.setText(googlePlusUser.getGender());
 
         ImageView avatar = (ImageView) root.findViewById(R.id.google_plus_user_avatar);
-        new FragmentGooglePlusInfo.DownLoadImageTask(avatar).execute(getAvatarUrl(googlePlusUser.image.avatarUrl, 200));
+        new FragmentGooglePlusInfo.DownLoadImageTask(avatar).execute(getAvatarUrl(googlePlusUser.getImage().getAvatarUrl(), 200));
     }
 
     private String getAvatarUrl(String defaultUrl, int size) {

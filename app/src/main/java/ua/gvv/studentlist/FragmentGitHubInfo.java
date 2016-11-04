@@ -85,16 +85,16 @@ public class FragmentGitHubInfo extends Fragment implements Callback {
     private void showDetailInfo(GitHubUser gitHubUser) {
         View root = getView();
         TextView view = (TextView) root.findViewById(R.id.git_hub_user_name);
-        view.setText(gitHubUser.name);
+        view.setText(gitHubUser.getName());
 
         view = (TextView) root.findViewById(R.id.git_hub_user_login);
-        view.setText(gitHubUser.login);
+        view.setText(gitHubUser.getLogin());
 
         view = (TextView) root.findViewById(R.id.git_hub_user_location);
-        view.setText(gitHubUser.location);
+        view.setText(gitHubUser.getLocation());
 
         ImageView avatar = (ImageView) root.findViewById(R.id.git_hub_user_avatar);
-        new DownLoadImageTask(avatar).execute(gitHubUser.avatarUrl);
+        new DownLoadImageTask(avatar).execute(gitHubUser.getAvatarUrl());
 
     }
 
