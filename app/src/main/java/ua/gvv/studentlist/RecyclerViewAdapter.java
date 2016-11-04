@@ -74,7 +74,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 showDetailInfo(ActivityDetail.API_GIT_HUB, student.getGitHubName());
             } else if (v.getId() == button.getId()) {
                 Student student = list.get(getAdapterPosition());
-                showDetailInfo(ActivityDetail.API_GOOGLE_PLUS, student.getGoogleLink());
+                showDetailInfo(ActivityDetail.API_GOOGLE_PLUS, student.getGoogleName());
             }
         }
 

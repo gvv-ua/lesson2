@@ -9,7 +9,7 @@ import android.os.Parcelable;
 
 public class Student implements Parcelable {
     private String name;
-    private String googleLink;
+    private String googleName;
     private String gitHubName;
 
     public Student(Parcel in) {
@@ -19,7 +19,7 @@ public class Student implements Parcelable {
 
     Student(String name, String googleLink, String githubLink) {
         this.name = name;
-        this.googleLink = googleLink;
+        this.googleName = googleLink;
         this.gitHubName = githubLink;
     }
 
@@ -31,13 +31,13 @@ public class Student implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
-        dest.writeString(googleLink);
+        dest.writeString(googleName);
         dest.writeString(gitHubName);
     }
 
     public void readFromParcel(Parcel in) {
         name = in.readString();
-        googleLink = in.readString();
+        googleName = in.readString();
         gitHubName = in.readString();
     }
 
@@ -55,8 +55,8 @@ public class Student implements Parcelable {
         return this.name;
     }
 
-    public String getGoogleLink() {
-        return this.googleLink;
+    public String getGoogleName() {
+        return this.googleName;
     }
 
     public String getGitHubName() {

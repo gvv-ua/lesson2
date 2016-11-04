@@ -67,7 +67,7 @@ public class ListViewAdapter extends BaseAdapter implements ListAdapter {
             @Override
             public void onClick(View v) {
                 Student student = list.get(position);
-                showDetailInfo(ActivityDetail.API_GOOGLE_PLUS, student.getGoogleLink());
+                showDetailInfo(ActivityDetail.API_GOOGLE_PLUS, student.getGoogleName());
             }
         });
 

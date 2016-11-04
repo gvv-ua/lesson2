@@ -84,16 +84,16 @@ public class FragmentGitHubInfo extends Fragment implements Callback {
 
     private void showDetailInfo(GitHubUser gitHubUser) {
         View root = getView();
-        TextView view = (TextView)root.findViewById(R.id.git_hub_user_name);
+        TextView view = (TextView) root.findViewById(R.id.git_hub_user_name);
         view.setText(gitHubUser.name);
 
-        view = (TextView)root.findViewById(R.id.git_hub_user_login);
+        view = (TextView) root.findViewById(R.id.git_hub_user_login);
         view.setText(gitHubUser.login);
 
-        view = (TextView)root.findViewById(R.id.git_hub_user_location);
+        view = (TextView) root.findViewById(R.id.git_hub_user_location);
         view.setText(gitHubUser.location);
 
-        ImageView avatar = (ImageView)root.findViewById(R.id.git_hub_user_avatar);
+        ImageView avatar = (ImageView) root.findViewById(R.id.git_hub_user_avatar);
         new DownLoadImageTask(avatar).execute(gitHubUser.avatarUrl);
 
     }
@@ -111,30 +111,26 @@ public class FragmentGitHubInfo extends Fragment implements Callback {
         client.newCall(request).enqueue(this);
     }
 
-    private class DownLoadImageTask extends AsyncTask<String,Void,Bitmap> {
+    private class DownLoadImageTask extends AsyncTask<String, Void, Bitmap> {
         ImageView imageView;
 
-        public DownLoadImageTask(ImageView imageView){
+        public DownLoadImageTask(ImageView imageView) {
             this.imageView = imageView;
         }
 
-        protected Bitmap doInBackground(String...urls){
+        protected Bitmap doInBackground(String... urls) {
             String urlOfImage = urls[0];
             Bitmap logo = null;
-            try{
+            try {
                 InputStream is = new URL(urlOfImage).openStream();
-                /*
-                    decodeStream(InputStream is)
-                        Decode an input stream into a bitmap.
-                 */
                 logo = BitmapFactory.decodeStream(is);
-            }catch(Exception e){ // Catch the download exception
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             return logo;
         }
 
-        protected void onPostExecute(Bitmap result){
+        protected void onPostExecute(Bitmap result) {
             imageView.setImageBitmap(result);
         }
     }

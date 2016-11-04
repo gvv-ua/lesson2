@@ -32,14 +32,15 @@ public class ActivityDetail extends AppCompatActivity {
             FragmentManager manager = getSupportFragmentManager();
             FragmentTransaction transaction = manager.beginTransaction();
             Fragment fragment;
+            Bundle bundle = new Bundle();
+            bundle.putString(USER, user);
             if (apiType == API_GIT_HUB) {
                 fragment = new FragmentGitHubInfo();
-                Bundle bundle = new Bundle();
-                bundle.putString(USER, user);
                 fragment.setArguments(bundle);
                 transaction.add(R.id.activity_detail, fragment, "CurrentFragment").commit();
             } else if (apiType == API_GOOGLE_PLUS) {
                 fragment = new FragmentGooglePlusInfo();
+                fragment.setArguments(bundle);
                 transaction.add(R.id.activity_detail, fragment, "CurrentFragment").commit();
             }
         }

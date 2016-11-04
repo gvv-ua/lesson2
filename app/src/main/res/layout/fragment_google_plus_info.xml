@@ -1,13 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             tools:context="ua.gvv.studentlist.FragmentGooglePlusInfo">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              tools:context="ua.gvv.studentlist.FragmentGooglePlusInfo">
+
+    <ImageView
+        android:id="@+id/google_plus_user_avatar"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"/>
 
     <TextView
+        android:id="@+id/google_plus_user_name"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="hello_google_plus"/>
+        android:layout_height="25dp"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:textStyle="bold"/>
 
-</FrameLayout>
+    <TextView
+        android:id="@+id/google_plus_user_gender"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:textAlignment="center"
+        android:textSize="16sp"
+        android:textStyle="bold"/>
+
+</LinearLayout>
