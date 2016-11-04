@@ -9,7 +9,8 @@
     <ImageView
         android:id="@+id/google_plus_user_avatar"
         android:layout_width="match_parent"
-        android:layout_height="200dp"/>
+        android:layout_height="200dp"
+        android:layout_margin="10dp"/>
 
     <TextView
         android:id="@+id/google_plus_user_name"
@@ -29,11 +30,17 @@
 
     <Button
         android:id="@+id/google_plus_open_url"
-        android:text="@string/open_title"
         android:layout_width="wrap_content"
-        android:textAlignment="center"
         android:layout_gravity="center"
         android:layout_height="50dp"
+        android:background="#DC4B3F"
+        android:layout_marginTop="10dp"
+        android:drawableLeft="@drawable/google_plus_logo"
+        android:padding="10dp"
+        android:text="@string/title_google_plus"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+
         />
 
 </LinearLayout>
