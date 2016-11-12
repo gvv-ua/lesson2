@@ -31,6 +31,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
                 <data android:scheme="https" android:host="@string/host_name_git_hub"/>
                 <data android:scheme="https" android:host="@string/host_name_google_plus"/>
             </intent-filter>

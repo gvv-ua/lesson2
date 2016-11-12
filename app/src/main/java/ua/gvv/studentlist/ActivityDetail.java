@@ -1,14 +1,18 @@
 package ua.gvv.studentlist;
 
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ActivityDetail extends AppCompatActivity {
@@ -85,7 +89,30 @@ public class ActivityDetail extends AppCompatActivity {
             } else if (host.toLowerCase().equals(getString(R.string.host_name_google_plus))) {
                 this.user = path.get(0);
                 this.detailType = DETAIL_GOOGLE_PLUS;
+            } else {
+                callViewIntent(data);
+            }
+        } else {
+            callViewIntent(data);
+        }
+    }
+
+    public void callViewIntent(Uri data) {
+        List<Intent> list = new ArrayList<Intent>();
+
+        Intent viewIntent = new Intent(Intent.ACTION_VIEW, data);
+        List<ResolveInfo> listView = getPackageManager().queryIntentActivities(viewIntent, 0);
+        for (ResolveInfo res : listView) {
+            if (!res.activityInfo.packageName.equals(getPackageName())) {
+                Intent targetIntent = new Intent(Intent.ACTION_VIEW, data);
+                targetIntent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
+                targetIntent.setPackage(res.activityInfo.packageName);
+                list.add(targetIntent);
             }
         }
+
+        Intent chooserIntent = Intent.createChooser(list.remove(0), "Select App");
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, list.toArray(new Parcelable[]{}));
+        startActivity(chooserIntent);
     }
 }

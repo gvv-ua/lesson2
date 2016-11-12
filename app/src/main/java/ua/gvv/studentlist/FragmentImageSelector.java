@@ -52,18 +52,17 @@ public class FragmentImageSelector extends Fragment {
 
     private void getImage() {
         List<Intent> imageIntentsList = new ArrayList<Intent>();
-        final Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
 
         Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         List<ResolveInfo> listGall = getActivity().getPackageManager().queryIntentActivities(galleryIntent, 0);
         for (ResolveInfo res : listGall) {
-            final Intent finalIntent = new Intent(galleryIntent);
-            finalIntent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
-            imageIntentsList.add(finalIntent);
+            Intent targetIntent = new Intent(galleryIntent);
+            targetIntent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
+            imageIntentsList.add(targetIntent);
         }
 
-        // Chooser of filesystem options.
-        final Intent chooserIntent = Intent.createChooser(cameraIntent, getString(R.string.title_request_image));
+        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        Intent chooserIntent = Intent.createChooser(cameraIntent, getString(R.string.title_request_image));
         chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, imageIntentsList.toArray(new Parcelable[imageIntentsList.size()]));
         startActivityForResult(chooserIntent, REQUEST_IMAGE);
     }
