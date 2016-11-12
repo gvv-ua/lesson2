@@ -1,5 +1,7 @@
 package ua.gvv.studentlist;
 
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -8,6 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 
 import java.util.ArrayList;
 
@@ -20,6 +24,8 @@ public class ActivityMain extends AppCompatActivity {
 
     private FragmentListView fragList;
     private FragmentRecyclerView fragRecycler;
+
+    private HeadsetReceiver headsetReceiver;
 
     private ArrayList<Student> students = new ArrayList<Student>(20);
 
@@ -66,6 +72,8 @@ public class ActivityMain extends AppCompatActivity {
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.add(R.id.activity_main, fragment, "CurrentFragment")
                 .commit();
+
+        headsetReceiver = new HeadsetReceiver(this);
     }
 
     @Override
@@ -107,5 +115,23 @@ public class ActivityMain extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void addContentView(View view, ViewGroup.LayoutParams params) {
+        super.addContentView(view, params);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(headsetReceiver);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        IntentFilter filter = new IntentFilter(Intent.ACTION_HEADSET_PLUG);
+        registerReceiver(headsetReceiver, filter);
     }
 }

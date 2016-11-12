@@ -1,6 +1,7 @@
 package ua.gvv.studentlist;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -18,6 +19,8 @@ public class ActivityDetail extends AppCompatActivity {
 
     private int apiType = DETAIL_TYPE_WRONG;
     private String user = "";
+
+    private HeadsetReceiver headsetReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +52,20 @@ public class ActivityDetail extends AppCompatActivity {
             }
 
         }
+        headsetReceiver = new HeadsetReceiver(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(headsetReceiver);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        IntentFilter filter = new IntentFilter(Intent.ACTION_HEADSET_PLUG);
+        registerReceiver(headsetReceiver, filter);
     }
 
 }
