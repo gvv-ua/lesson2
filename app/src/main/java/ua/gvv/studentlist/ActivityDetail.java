@@ -2,11 +2,14 @@ package ua.gvv.studentlist;
 
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+
+import java.util.List;
 
 public class ActivityDetail extends AppCompatActivity {
     public static final String DETAIL_TYPE = "detail_type";
@@ -17,7 +20,7 @@ public class ActivityDetail extends AppCompatActivity {
 
     public static final String USER = "user";
 
-    private int apiType = DETAIL_TYPE_WRONG;
+    private int detailType = DETAIL_TYPE_WRONG;
     private String user = "";
 
     private HeadsetReceiver headsetReceiver;
@@ -28,29 +31,33 @@ public class ActivityDetail extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
 
         Intent intent = getIntent();
-        if ((intent != null) && (intent.hasExtra(DETAIL_TYPE))) {
-            apiType = intent.getIntExtra(DETAIL_TYPE, DETAIL_TYPE_WRONG);
-            user = intent.getStringExtra(USER);
+        if (intent != null) {
+            Uri data = intent.getData();
+            if (data != null) {
+                parseData(data);
+            } else  if (intent.hasExtra(DETAIL_TYPE)){
+                detailType = intent.getIntExtra(DETAIL_TYPE, DETAIL_TYPE_WRONG);
+                user = intent.getStringExtra(USER);
+            }
         }
-        if (apiType != DETAIL_TYPE_WRONG) {
+        if (detailType != DETAIL_TYPE_WRONG) {
             FragmentManager manager = getSupportFragmentManager();
             FragmentTransaction transaction = manager.beginTransaction();
             Fragment fragment;
             Bundle bundle = new Bundle();
             bundle.putString(USER, user);
-            if (apiType == DETAIL_GIT_HUB) {
+            if (detailType == DETAIL_GIT_HUB) {
                 fragment = new FragmentGitHubInfo();
                 fragment.setArguments(bundle);
                 transaction.add(R.id.activity_detail, fragment, "CurrentFragment").commit();
-            } else if (apiType == DETAIL_GOOGLE_PLUS) {
+            } else if (detailType == DETAIL_GOOGLE_PLUS) {
                 fragment = new FragmentGooglePlusInfo();
                 fragment.setArguments(bundle);
                 transaction.add(R.id.activity_detail, fragment, "CurrentFragment").commit();
-            } else if (apiType == DETAIL_IMAGE_SELECTOR) {
+            } else if (detailType == DETAIL_IMAGE_SELECTOR) {
                 fragment = new FragmentImageSelector();
                 transaction.add(R.id.activity_detail, fragment, "CurrentFragment").commit();
             }
-
         }
         headsetReceiver = new HeadsetReceiver(this);
     }
@@ -68,4 +75,17 @@ public class ActivityDetail extends AppCompatActivity {
         registerReceiver(headsetReceiver, filter);
     }
 
+    private void parseData(Uri data) {
+        List<String> path = data.getPathSegments();
+        String host = data.getHost();
+        if (path.size() == 1) {
+            if (host.toLowerCase().equals(getString(R.string.host_name_git_hub))) {
+                this.user = path.get(0);
+                this.detailType = DETAIL_GIT_HUB;
+            } else if (host.toLowerCase().equals(getString(R.string.host_name_google_plus))) {
+                this.user = path.get(0);
+                this.detailType = DETAIL_GOOGLE_PLUS;
+            }
+        }
+    }
 }

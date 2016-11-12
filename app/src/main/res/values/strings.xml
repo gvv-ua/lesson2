@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">GH16-Gubskyi-02-List</string>
+    <string name="app_name">GH16-Gubskyi-03-List</string>
     <string name="switch_button">Switch View</string>
     <string name="action_delete">Delete</string>
 
@@ -17,4 +17,7 @@
     <string name="headset_unplugged">Headset is unplugged</string>
     <string name="headset_plugged">Headset is plugged</string>
     <string name="headset_unknown">Unknown headset state</string>
+
+    <string name="host_name_git_hub">github.com</string>
+    <string name="host_name_google_plus">plus.google.com</string>
 </resources>

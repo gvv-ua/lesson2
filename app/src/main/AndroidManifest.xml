@@ -19,17 +19,21 @@
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         <activity android:name="ua.gvv.studentlist.ActivityDetail"
-                  android:label="@string/title_detail"
                   android:parentActivityName="ua.gvv.studentlist.ActivityMain"
                   android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ua.gvv.studentlist.ActivityMain"/>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:scheme="https" android:host="@string/host_name_git_hub"/>
+                <data android:scheme="https" android:host="@string/host_name_google_plus"/>
+            </intent-filter>
         </activity>
     </application>
 
