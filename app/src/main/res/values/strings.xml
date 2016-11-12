@@ -8,6 +8,7 @@
 
     <string name="title_git_hub">GitHub</string>
     <string name="title_google_plus">Google</string>
+    <string name="title_request_image">Select image</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="title_activity_detail">ActivityDetail</string>
