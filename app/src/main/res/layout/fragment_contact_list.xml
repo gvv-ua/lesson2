@@ -21,6 +21,13 @@
             android:text="Contact List"
             />
 
+        <ImageView
+            android:id="@+id/contact_item_add"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/img_contact_add"
+            />
+
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView

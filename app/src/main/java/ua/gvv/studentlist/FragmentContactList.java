@@ -14,6 +14,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 /**
  * Created by gvv on 26.11.16.
@@ -51,6 +53,18 @@ public class FragmentContactList extends Fragment  implements LoaderManager.Load
 
         contactListView = (RecyclerView)view.findViewById(R.id.contact_list_recycler);
         contactListView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        //Show FragmentContactList
+        ImageView image = (ImageView) view.findViewById(R.id.contact_item_add);
+        image.setOnClickListener(new View.OnClickListener() {
+                                     @Override
+                                     public void onClick(View v) {
+                                         Toast toast = Toast.makeText(getActivity(), "Add Contact", Toast.LENGTH_SHORT);
+                                         toast.show();
+                                     }
+                                 }
+        );
+
     }
 
     @Override
