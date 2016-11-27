@@ -77,7 +77,8 @@ public class FragmentContactList extends Fragment  implements LoaderManager.Load
             String sortOrder = ContactsContract.Contacts.Entity.DISPLAY_NAME_PRIMARY + " ASC";
 
             cursorLoader = new CursorLoader(getActivity(),
-                    ContactsContract.Contacts.CONTENT_URI,
+                    //ContactsContract.Contacts.CONTENT_URI,
+                    ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                     projection,
                     null,
                     null,
