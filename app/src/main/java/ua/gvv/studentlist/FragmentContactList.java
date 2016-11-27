@@ -16,6 +16,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * Created by gvv on 26.11.16.
@@ -23,6 +26,8 @@ import android.widget.ImageView;
 
 public class FragmentContactList extends Fragment  implements LoaderManager.LoaderCallbacks<Cursor> {
     private final static int CONTACT_LOADER_ID = 100;
+    private final static int CONTACT_ADD_INFO_ID = 101;
+
     private Uri contactUri;
     private String[] projection;
     private RecyclerView contactListView;
@@ -59,14 +64,26 @@ public class FragmentContactList extends Fragment  implements LoaderManager.Load
         image.setOnClickListener(new View.OnClickListener() {
                                      @Override
                                      public void onClick(View v) {
-//                                         Toast toast = Toast.makeText(getActivity(), "Add Contact", Toast.LENGTH_SHORT);
-//                                         toast.show();
-                                         Intent intent = new Intent(ContactsContract.Intents.Insert.ACTION);
-                                         intent.setType(ContactsContract.RawContacts.CONTENT_TYPE);
-                                         startActivity(intent);
+//                                         Intent intent = new Intent(ContactsContract.Intents.Insert.ACTION);
+//                                         intent.setType(ContactsContract.RawContacts.CONTENT_TYPE);
+//                                         startActivity(intent);
+                                         Intent intent = new Intent(getActivity(), ActivityContact.class);
+                                         startActivityForResult(intent, CONTACT_ADD_INFO_ID);
                                      }
                                  }
         );
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if ((requestCode == CONTACT_ADD_INFO_ID) && (resultCode == RESULT_OK) && (data != null)) {
+            String name = data.getStringExtra("name");
+            String phone = data.getStringExtra("phone");
+            Toast toast = Toast.makeText(getContext(), name + "-" + phone, Toast.LENGTH_SHORT);
+            toast.show();
+        }
 
     }
 
