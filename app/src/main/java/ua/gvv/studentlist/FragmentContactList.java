@@ -1,5 +1,6 @@
 package ua.gvv.studentlist;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,7 +16,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 /**
  * Created by gvv on 26.11.16.
@@ -59,8 +59,11 @@ public class FragmentContactList extends Fragment  implements LoaderManager.Load
         image.setOnClickListener(new View.OnClickListener() {
                                      @Override
                                      public void onClick(View v) {
-                                         Toast toast = Toast.makeText(getActivity(), "Add Contact", Toast.LENGTH_SHORT);
-                                         toast.show();
+//                                         Toast toast = Toast.makeText(getActivity(), "Add Contact", Toast.LENGTH_SHORT);
+//                                         toast.show();
+                                         Intent intent = new Intent(ContactsContract.Intents.Insert.ACTION);
+                                         intent.setType(ContactsContract.RawContacts.CONTENT_TYPE);
+                                         startActivity(intent);
                                      }
                                  }
         );
@@ -71,12 +74,14 @@ public class FragmentContactList extends Fragment  implements LoaderManager.Load
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         CursorLoader cursorLoader = null;
         if (id == CONTACT_LOADER_ID) {
+            String sortOrder = ContactsContract.Contacts.Entity.DISPLAY_NAME_PRIMARY + " ASC";
+
             cursorLoader = new CursorLoader(getActivity(),
                     ContactsContract.Contacts.CONTENT_URI,
                     projection,
                     null,
                     null,
-                    null);
+                    sortOrder);
         }
         return cursorLoader;
     }
