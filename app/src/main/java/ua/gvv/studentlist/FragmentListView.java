@@ -42,6 +42,7 @@ public class FragmentListView extends Fragment {
         ListView listView = (ListView) view.findViewById(R.id.listview_lesson2);
         listView.setAdapter(adapter);
 
+        //Show FragmentImageSelector
         ImageView image = (ImageView) view.findViewById(R.id.list_view_image);
         image.setOnClickListener(new View.OnClickListener() {
                                      @Override
@@ -52,6 +53,19 @@ public class FragmentListView extends Fragment {
                                      }
                                  }
         );
+
+        //Show FragmentContactList
+        image = (ImageView) view.findViewById(R.id.list_view_contacts);
+        image.setOnClickListener(new View.OnClickListener() {
+                                     @Override
+                                     public void onClick(View v) {
+                                         Intent intent = new Intent(getActivity(), ActivityDetail.class)
+                                                 .putExtra(ActivityDetail.DETAIL_TYPE, ActivityDetail.DETAIL_CONTACT_LIST);
+                                         getActivity().startActivity(intent);
+                                     }
+                                 }
+        );
+
     }
 }
 

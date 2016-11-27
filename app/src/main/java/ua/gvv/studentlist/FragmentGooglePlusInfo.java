@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,24 +12,24 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
-
 import jp.wasabeef.picasso.transformations.CropCircleTransformation;
-import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.GET;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 /**
  * Created by gvv on 03.11.16.
  */
 
-public class FragmentGooglePlusInfo extends Fragment implements Callback {
+public class FragmentGooglePlusInfo extends Fragment {
     private String LOG_TAG = "FragmentGooglePlusInfo";
     private String user = "";
     private String API_KEY = "AIzaSyB50K0_1LI45_Wn7_fhl7_AfungsUr52J8";
@@ -49,32 +48,29 @@ public class FragmentGooglePlusInfo extends Fragment implements Callback {
         if (extras != null) {
             user = extras.getString(ActivityDetail.USER);
         }
-        try {
-            requestInfo(user);
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "Error", e);
-        }
-    }
 
-    @Override
-    public void onFailure(Call call, IOException e) {
-        Log.e(LOG_TAG, "Error", e);
-    }
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(FragmentGooglePlusInfo.GooglePlusService.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
 
-    @Override
-    public void onResponse(Call call, Response response) throws IOException {
-        if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+        GooglePlusService service = retrofit.create(GooglePlusService.class);
 
-        String jsonInfo = response.body().string();
-        Gson gson = new Gson();
-        final GooglePlusUser googlePlusUser = gson.fromJson(jsonInfo, GooglePlusUser.class);
-        getActivity().runOnUiThread(new Runnable() {
+        service.getData(user, API_KEY).enqueue(new Callback<GooglePlusUser>() {
             @Override
-            public void run() {
-                showDetailInfo(googlePlusUser);
+            public void onResponse(Call<GooglePlusUser> call, Response<GooglePlusUser> response) {
+                GooglePlusUser googlePlusUser = response.body();
+                if (googlePlusUser != null) {
+                    showDetailInfo(googlePlusUser);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GooglePlusUser> call, Throwable t) {
 
             }
         });
+
     }
 
     private void showDetailInfo(final GooglePlusUser googlePlusUser) {
@@ -94,7 +90,7 @@ public class FragmentGooglePlusInfo extends Fragment implements Callback {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent= new Intent(Intent.ACTION_VIEW, Uri.parse(googlePlusUser.getUrl()));
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(googlePlusUser.getUrl()));
                 v.getContext().startActivity(intent);
             }
         });
@@ -109,42 +105,10 @@ public class FragmentGooglePlusInfo extends Fragment implements Callback {
         return url.toString();
     }
 
-    public void requestInfo(String user) throws IOException {
-        HttpUrl url = HttpUrl.parse("https://www.googleapis.com/plus/v1/people/")
-                .newBuilder()
-                .addPathSegment(user)
-                .addQueryParameter("key", API_KEY)
-                .build();
+    public interface GooglePlusService {
+        public static final String BASE_URL = "https://www.googleapis.com/";
 
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-        client.newCall(request).enqueue(this);
+        @GET("plus/v1/people/{user}")
+        retrofit2.Call<GooglePlusUser> getData(@Path("user") String user, @Query("key") String apiKey);
     }
-
-//    private class DownLoadImageTask extends AsyncTask<String, Void, Bitmap> {
-//        ImageView imageView;
-//
-//        public DownLoadImageTask(ImageView imageView) {
-//            this.imageView = imageView;
-//        }
-//
-//        protected Bitmap doInBackground(String... urls) {
-//            String urlOfImage = urls[0];
-//            Bitmap logo = null;
-//            try {
-//                InputStream is = new URL(urlOfImage).openStream();
-//                logo = BitmapFactory.decodeStream(is);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//            return logo;
-//        }
-//
-//        protected void onPostExecute(Bitmap result) {
-//            imageView.setImageBitmap(result);
-//        }
-//    }
-
 }

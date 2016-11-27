@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,24 +13,21 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
-
 import jp.wasabeef.picasso.transformations.CropCircleTransformation;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.GET;
+import retrofit2.http.Path;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FragmentGitHubInfo extends Fragment implements Callback {
+public class FragmentGitHubInfo extends Fragment {
     private String LOG_TAG = "FragmentGitHubInfo";
     private String user = "gvv-ua";
 
@@ -54,39 +50,34 @@ public class FragmentGitHubInfo extends Fragment implements Callback {
             user = extras.getString(ActivityDetail.USER);
         }
 
-        try {
-            requestInfo(user);
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "Error", e);
-        }
-    }
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(GitHubService.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
 
-    @Override
-    public void onFailure(Call call, IOException e) {
-        Log.e(LOG_TAG, "Error", e);
-    }
+        GitHubService service = retrofit.create(GitHubService.class);
 
-    @Override
-    public void onResponse(Call call, Response response) throws IOException {
-        if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+        service.getData(user).enqueue(new Callback<GitHubUser>() {
+                                          @Override
+                                          public void onResponse(Call<GitHubUser> call, Response<GitHubUser> response) {
+                                              GitHubUser gitHubUser = response.body();
+                                              if (gitHubUser != null) {
+                                                  showDetailInfo(gitHubUser);
+                                              }
+                                          }
 
-        String jsonInfo = response.body().string();
-        Gson gson = new Gson();
-        final GitHubUser gitHubUser = gson.fromJson(jsonInfo, GitHubUser.class);
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                showDetailInfo(gitHubUser);
+                                          @Override
+                                          public void onFailure(Call<GitHubUser> call, Throwable t) {
 
-            }
-        });
+                                          }
+                                      }
+        );
     }
 
     private void showDetailInfo(final GitHubUser gitHubUser) {
         View root = getView();
 
         ImageView avatar = (ImageView) root.findViewById(R.id.git_hub_user_avatar);
-//        new DownLoadImageTask(avatar).execute(gitHubUser.getAvatarUrl());
         Picasso.with(root.getContext()).load(gitHubUser.getAvatarUrl()).transform(new CropCircleTransformation()).into(avatar);
 
         TextView view = (TextView) root.findViewById(R.id.git_hub_user_name);
@@ -102,47 +93,17 @@ public class FragmentGitHubInfo extends Fragment implements Callback {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent= new Intent(Intent.ACTION_VIEW, Uri.parse(gitHubUser.getUrl()));
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(gitHubUser.getUrl()));
                 v.getContext().startActivity(intent);
             }
         });
-
     }
 
-    public void requestInfo(String user) throws IOException {
-        HttpUrl url = HttpUrl.parse("https://api.github.com/users")
-                .newBuilder()
-                .addPathSegment(user)
-                .build();
+    public interface GitHubService {
+        public static final String BASE_URL = "https://api.github.com/";
 
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-        client.newCall(request).enqueue(this);
+        @GET("users/{user}")
+        Call<GitHubUser> getData(@Path("user") String user);
     }
 
-//    private class DownLoadImageTask extends AsyncTask<String, Void, Bitmap> {
-//        ImageView imageView;
-//
-//        public DownLoadImageTask(ImageView imageView) {
-//            this.imageView = imageView;
-//        }
-//
-//        protected Bitmap doInBackground(String... urls) {
-//            String urlOfImage = urls[0];
-//            Bitmap logo = null;
-//            try {
-//                InputStream is = new URL(urlOfImage).openStream();
-//                logo = BitmapFactory.decodeStream(is);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//            return logo;
-//        }
-//
-//        protected void onPostExecute(Bitmap result) {
-//            imageView.setImageBitmap(result);
-//        }
-//    }
 }
