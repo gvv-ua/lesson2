@@ -1,5 +1,6 @@
 package ua.gvv.studentlist;
 
+import android.content.ContentProviderOperation;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -12,13 +13,17 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 import static android.app.Activity.RESULT_OK;
+import static android.content.ContentValues.TAG;
 
 /**
  * Created by gvv on 26.11.16.
@@ -83,6 +88,54 @@ public class FragmentContactList extends Fragment  implements LoaderManager.Load
             String phone = data.getStringExtra("phone");
             Toast toast = Toast.makeText(getContext(), name + "-" + phone, Toast.LENGTH_SHORT);
             toast.show();
+
+            ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
+//            ContentProviderOperation.Builder op = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+//                    .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+//                    .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)
+//                    .withValue(ContactsContract.CommonDataKinds.Phone.NUMBER, phone)
+//                    .withValue(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME, name)
+//                    .withValue(ContactsContract.CommonDataKinds.Phone.TYPE, ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE);
+//
+//            op.withYieldAllowed(true);
+//            ops.add(op.build());
+            ops.add(ContentProviderOperation.newInsert(
+                    ContactsContract.RawContacts.CONTENT_URI)
+                    .withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, null)
+                    .withValue(ContactsContract.RawContacts.ACCOUNT_NAME, null)
+                    .build());
+
+            //------------------------------------------------------ Names
+            if (name != null) {
+                ops.add(ContentProviderOperation.newInsert(
+                        ContactsContract.Data.CONTENT_URI)
+                        .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+                        .withValue(ContactsContract.Data.MIMETYPE,
+                                ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE)
+                        .withValue(
+                                ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME,
+                                name).build());
+            }
+
+            //------------------------------------------------------ Mobile Number
+            if (phone != null) {
+                ops.add(ContentProviderOperation.
+                        newInsert(ContactsContract.Data.CONTENT_URI)
+                        .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+                        .withValue(ContactsContract.Data.MIMETYPE,
+                                ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)
+                        .withValue(ContactsContract.CommonDataKinds.Phone.NUMBER, phone)
+                        .withValue(ContactsContract.CommonDataKinds.Phone.TYPE,
+                                ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE)
+                        .build());
+            }
+            try {
+                getActivity().getContentResolver().applyBatch(ContactsContract.AUTHORITY, ops);
+            } catch (Exception e) {
+                // Log exception
+                Log.e(TAG, "Exception encountered while inserting contact: " + e);
+            }
+
         }
 
     }
