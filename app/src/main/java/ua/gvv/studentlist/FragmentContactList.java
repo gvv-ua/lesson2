@@ -1,5 +1,6 @@
 package ua.gvv.studentlist;
 
+import android.content.ContentProviderOperation;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -12,10 +13,17 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+
+import static android.app.Activity.RESULT_OK;
+import static android.content.ContentValues.TAG;
 
 /**
  * Created by gvv on 26.11.16.
@@ -23,6 +31,8 @@ import android.widget.ImageView;
 
 public class FragmentContactList extends Fragment  implements LoaderManager.LoaderCallbacks<Cursor> {
     private final static int CONTACT_LOADER_ID = 100;
+    private final static int CONTACT_ADD_INFO_ID = 101;
+
     private Uri contactUri;
     private String[] projection;
     private RecyclerView contactListView;
@@ -59,14 +69,74 @@ public class FragmentContactList extends Fragment  implements LoaderManager.Load
         image.setOnClickListener(new View.OnClickListener() {
                                      @Override
                                      public void onClick(View v) {
-//                                         Toast toast = Toast.makeText(getActivity(), "Add Contact", Toast.LENGTH_SHORT);
-//                                         toast.show();
-                                         Intent intent = new Intent(ContactsContract.Intents.Insert.ACTION);
-                                         intent.setType(ContactsContract.RawContacts.CONTENT_TYPE);
-                                         startActivity(intent);
+//                                         Intent intent = new Intent(ContactsContract.Intents.Insert.ACTION);
+//                                         intent.setType(ContactsContract.RawContacts.CONTENT_TYPE);
+//                                         startActivity(intent);
+                                         Intent intent = new Intent(getActivity(), ActivityContact.class);
+                                         startActivityForResult(intent, CONTACT_ADD_INFO_ID);
                                      }
                                  }
         );
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if ((requestCode == CONTACT_ADD_INFO_ID) && (resultCode == RESULT_OK) && (data != null)) {
+            String name = data.getStringExtra("name");
+            String phone = data.getStringExtra("phone");
+            Toast toast = Toast.makeText(getContext(), name + "-" + phone, Toast.LENGTH_SHORT);
+            toast.show();
+
+            ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
+//            ContentProviderOperation.Builder op = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+//                    .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+//                    .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)
+//                    .withValue(ContactsContract.CommonDataKinds.Phone.NUMBER, phone)
+//                    .withValue(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME, name)
+//                    .withValue(ContactsContract.CommonDataKinds.Phone.TYPE, ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE);
+//
+//            op.withYieldAllowed(true);
+//            ops.add(op.build());
+            ops.add(ContentProviderOperation.newInsert(
+                    ContactsContract.RawContacts.CONTENT_URI)
+                    .withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, null)
+                    .withValue(ContactsContract.RawContacts.ACCOUNT_NAME, null)
+                    .build());
+
+            //------------------------------------------------------ Names
+            if (name != null) {
+                ops.add(ContentProviderOperation.newInsert(
+                        ContactsContract.Data.CONTENT_URI)
+                        .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+                        .withValue(ContactsContract.Data.MIMETYPE,
+                                ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE)
+                        .withValue(
+                                ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME,
+                                name).build());
+            }
+
+            //------------------------------------------------------ Mobile Number
+            if (phone != null) {
+                ops.add(ContentProviderOperation.
+                        newInsert(ContactsContract.Data.CONTENT_URI)
+                        .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+                        .withValue(ContactsContract.Data.MIMETYPE,
+                                ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)
+                        .withValue(ContactsContract.CommonDataKinds.Phone.NUMBER, phone)
+                        .withValue(ContactsContract.CommonDataKinds.Phone.TYPE,
+                                ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE)
+                        .build());
+            }
+            try {
+                getActivity().getContentResolver().applyBatch(ContactsContract.AUTHORITY, ops);
+            } catch (Exception e) {
+                // Log exception
+                Log.e(TAG, "Exception encountered while inserting contact: " + e);
+            }
+
+        }
 
     }
 
@@ -77,7 +147,8 @@ public class FragmentContactList extends Fragment  implements LoaderManager.Load
             String sortOrder = ContactsContract.Contacts.Entity.DISPLAY_NAME_PRIMARY + " ASC";
 
             cursorLoader = new CursorLoader(getActivity(),
-                    ContactsContract.Contacts.CONTENT_URI,
+                    //ContactsContract.Contacts.CONTENT_URI,
+                    ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                     projection,
                     null,
                     null,
