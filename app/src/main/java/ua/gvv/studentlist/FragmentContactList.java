@@ -151,43 +151,29 @@ public class FragmentContactList extends Fragment  implements LoaderManager.Load
             toast.show();
 
             ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
-//            ContentProviderOperation.Builder op = ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
-//                    .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
-//                    .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)
-//                    .withValue(ContactsContract.CommonDataKinds.Phone.NUMBER, phone)
-//                    .withValue(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME, name)
-//                    .withValue(ContactsContract.CommonDataKinds.Phone.TYPE, ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE);
-//
-//            op.withYieldAllowed(true);
-//            ops.add(op.build());
+
             ops.add(ContentProviderOperation.newInsert(
                     ContactsContract.RawContacts.CONTENT_URI)
                     .withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, null)
                     .withValue(ContactsContract.RawContacts.ACCOUNT_NAME, null)
                     .build());
 
-            //------------------------------------------------------ Names
             if (name != null) {
                 ops.add(ContentProviderOperation.newInsert(
                         ContactsContract.Data.CONTENT_URI)
                         .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
-                        .withValue(ContactsContract.Data.MIMETYPE,
-                                ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE)
-                        .withValue(
-                                ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME,
-                                name).build());
+                        .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE)
+                        .withValue(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME, name)
+                        .build());
             }
 
-            //------------------------------------------------------ Mobile Number
             if (phone != null) {
                 ops.add(ContentProviderOperation.
                         newInsert(ContactsContract.Data.CONTENT_URI)
                         .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
-                        .withValue(ContactsContract.Data.MIMETYPE,
-                                ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)
+                        .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)
                         .withValue(ContactsContract.CommonDataKinds.Phone.NUMBER, phone)
-                        .withValue(ContactsContract.CommonDataKinds.Phone.TYPE,
-                                ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE)
+                        .withValue(ContactsContract.CommonDataKinds.Phone.TYPE, ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE)
                         .build());
             }
             try {
