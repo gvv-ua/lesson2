@@ -21,6 +21,7 @@
               android:layout_marginRight="10dp"
               android:layout_alignTop="@id/iv_contact_photo"
               style="@android:style/TextAppearance.Medium"
+              android:maxLines="1"
 
         />
 

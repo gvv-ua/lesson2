@@ -21,6 +21,9 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import ua.gvv.studentlist.data.Contact;
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.ContentValues.TAG;
@@ -36,6 +39,7 @@ public class FragmentContactList extends Fragment  implements LoaderManager.Load
     private Uri contactUri;
     private String[] projection;
     private RecyclerView contactListView;
+    private List<Contact> contacts;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -160,14 +164,24 @@ public class FragmentContactList extends Fragment  implements LoaderManager.Load
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if ((data != null) && (data.moveToFirst())) {
-//            String name = data.getString(data.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY));
-//            TextView textViewview = (TextView) getActivity().findViewById(R.id.contact_list_title);
-//            textViewview.setText(name);
-            ContactListAdapter adapter = new ContactListAdapter(data);
-            contactListView.setAdapter(adapter);
+        contacts = new ArrayList<>();
 
+        if ((data != null) && (data.moveToFirst())) {
+            while (data.moveToNext()) {
+                Contact contact = new Contact();
+                contact.setName(data.getString(data.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY)));
+                contact.setPhone("123456");
+                String photo = data.getString(data.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI));
+                if (photo != null) {
+                    contact.setPhoto(Uri.parse(photo));
+                }
+                contacts.add(contact);
+            }
+            data.close();
         }
+        ContactListAdapter adapter = new ContactListAdapter(contacts);
+        contactListView.setAdapter(adapter);
+
     }
 
     @Override

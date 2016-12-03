@@ -1,8 +1,5 @@
 package ua.gvv.studentlist;
 
-import android.database.Cursor;
-import android.net.Uri;
-import android.provider.ContactsContract;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,20 +7,24 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.List;
+
+import ua.gvv.studentlist.data.Contact;
+
 /**
  * Created by gvv on 27.11.16.
  */
 
 public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.ContactViewHolder> {
-    private Cursor cursor;
+    private List<Contact> list;
 
-    public ContactListAdapter(Cursor cursor) {
-        this.cursor = cursor;
+    public ContactListAdapter(List<Contact> list) {
+        this.list = list;
     }
 
     @Override
     public int getItemCount() {
-        return cursor.getCount();
+        return list.size();
     }
 
     @Override
@@ -34,18 +35,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
     @Override
     public void onBindViewHolder(ContactListAdapter.ContactViewHolder holder, int position) {
-        cursor.moveToPosition(position);
-        String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY));
-        String photo = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI));
-        int hasPhone = cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
-        holder.name.setText(name);
-        if (hasPhone == 1) {
-            holder.phone.setText("123456");
-        }
-        if (photo != null) {
-            final Uri uri = Uri.parse(photo);
-            holder.photo.setImageURI(uri);
-        }
+        holder.bind(list.get(position));
     }
 
     class ContactViewHolder extends RecyclerView.ViewHolder {
@@ -59,6 +49,12 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
             name = (TextView) itemView.findViewById(R.id.tv_contact_name);
             phone = (TextView) itemView.findViewById(R.id.tv_contact_phone);
             photo = (ImageView) itemView.findViewById(R.id.iv_contact_photo);
+        }
+
+        public void bind(Contact contact) {
+            name.setText(contact.getName());
+            phone.setText(contact.getPhone());
+            photo.setImageURI(contact.getPhoto());
         }
     }
 }
