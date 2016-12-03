@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -18,7 +19,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -70,14 +70,10 @@ public class FragmentContactList extends Fragment  implements LoaderManager.Load
         contactListView = (RecyclerView)view.findViewById(R.id.contact_list_recycler);
         contactListView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        //Show FragmentContactList
-        ImageView image = (ImageView) view.findViewById(R.id.contact_item_add);
-        image.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton fabAdd = (FloatingActionButton) view.findViewById(R.id.fab_contact_item_add);
+        fabAdd.setOnClickListener(new View.OnClickListener() {
                                      @Override
                                      public void onClick(View v) {
-//                                         Intent intent = new Intent(ContactsContract.Intents.Insert.ACTION);
-//                                         intent.setType(ContactsContract.RawContacts.CONTENT_TYPE);
-//                                         startActivity(intent);
                                          Intent intent = new Intent(getActivity(), ActivityContact.class);
                                          startActivityForResult(intent, CONTACT_ADD_INFO_ID);
                                      }

@@ -21,6 +21,8 @@ public class ActivityContact extends Activity  implements View.OnClickListener {
 
         Button ok = (Button) findViewById(R.id.contact_add_ok);
         ok.setOnClickListener(this);
+        Button cancel = (Button) findViewById(R.id.contact_add_cancel);
+        cancel.setOnClickListener(this);
     }
 
     @Override
