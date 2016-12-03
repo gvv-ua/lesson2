@@ -1,6 +1,7 @@
 package ua.gvv.studentlist;
 
 import android.content.ContentProviderOperation;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -167,15 +168,31 @@ public class FragmentContactList extends Fragment  implements LoaderManager.Load
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         contacts = new ArrayList<>();
 
+        ContentResolver contentResolver = getActivity().getContentResolver();
         if ((data != null) && (data.moveToFirst())) {
             while (data.moveToNext()) {
                 Contact contact = new Contact();
                 contact.setName(data.getString(data.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY)));
-                contact.setPhone("123456");
+                //contact.setPhone("123456");
                 String photo = data.getString(data.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI));
                 if (photo != null) {
                     contact.setPhoto(Uri.parse(photo));
                 }
+
+                String[] projection = new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER};
+                String selection = ContactsContract.Data.CONTACT_ID + " = ? " +
+                        " and " + ContactsContract.Data.MIMETYPE + " = ? ";
+                String[] selectionArgs = new String[]{data.getString(data.getColumnIndex(ContactsContract.Contacts._ID)), ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE};
+                Cursor cursor = contentResolver.query(ContactsContract.Data.CONTENT_URI,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null);
+                if ((cursor != null) && (cursor.moveToFirst())) {
+                    contact.setPhone(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+                }
+                cursor.close();
+
                 contacts.add(contact);
             }
             data.close();
