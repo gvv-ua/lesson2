@@ -12,6 +12,8 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
+import ua.gvv.studentlist.data.Student;
+
 /**
  * Created by gvv on 30.10.16.
  */

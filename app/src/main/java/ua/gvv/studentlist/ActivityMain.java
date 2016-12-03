@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 
+import ua.gvv.studentlist.data.Student;
+
 public class ActivityMain extends AppCompatActivity {
     private static final String FRAGMENT_CURRENT = "CurrentFragment";
     private static final int FRAGMENT_LIST_VIEW = 1;

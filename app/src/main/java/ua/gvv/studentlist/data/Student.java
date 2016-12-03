@@ -1,4 +1,4 @@
-package ua.gvv.studentlist;
+package ua.gvv.studentlist.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -17,7 +17,7 @@ public class Student implements Parcelable {
         readFromParcel(in);
     }
 
-    Student(String name, String googleLink, String githubLink) {
+    public Student(String name, String googleLink, String githubLink) {
         this.name = name;
         this.googleName = googleLink;
         this.gitHubName = githubLink;

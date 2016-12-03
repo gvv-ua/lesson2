@@ -1,4 +1,4 @@
-package ua.gvv.studentlist;
+package ua.gvv.studentlist.data;
 
 /**
  * Created by gvv on 03.11.16.

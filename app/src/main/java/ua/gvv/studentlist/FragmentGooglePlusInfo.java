@@ -24,6 +24,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+import ua.gvv.studentlist.data.GooglePlusUser;
 
 /**
  * Created by gvv on 03.11.16.

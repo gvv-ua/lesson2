@@ -1,4 +1,4 @@
-package ua.gvv.studentlist;
+package ua.gvv.studentlist.data;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -68,7 +68,7 @@ public class GooglePlusUser {
         this.url = url;
     }
 
-    class Image {
+    public class Image {
         @SerializedName("url")
         private String avatarUrl;
 

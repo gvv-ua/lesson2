@@ -58,6 +58,7 @@ public class FragmentContactList extends Fragment  implements LoaderManager.Load
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        getActivity().setTitle("Contact List");
         projection = new String[]
                 {
                         ContactsContract.Contacts._ID,
@@ -74,7 +75,8 @@ public class FragmentContactList extends Fragment  implements LoaderManager.Load
         fabAdd.setOnClickListener(new View.OnClickListener() {
                                      @Override
                                      public void onClick(View v) {
-                                         Intent intent = new Intent(getActivity(), ActivityContact.class);
+                                         Intent intent = new Intent(getActivity(), ActivityDetail.class)
+                                                 .putExtra(ActivityDetail.DETAIL_TYPE, ActivityDetail.DETAIL_CONTACT_ADD);
                                          startActivityForResult(intent, CONTACT_ADD_INFO_ID);
                                      }
                                  }

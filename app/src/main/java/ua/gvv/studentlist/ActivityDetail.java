@@ -22,6 +22,7 @@ public class ActivityDetail extends AppCompatActivity {
     public static final int DETAIL_GOOGLE_PLUS = 2;
     public static final int DETAIL_IMAGE_SELECTOR = 3;
     public static final int DETAIL_CONTACT_LIST = 4;
+    public static final int DETAIL_CONTACT_ADD = 5;
 
     public static final String USER = "user";
 
@@ -64,6 +65,9 @@ public class ActivityDetail extends AppCompatActivity {
                 transaction.add(R.id.activity_detail, fragment, "CurrentFragment").commit();
             } else if (detailType == DETAIL_CONTACT_LIST) {
                 fragment = new FragmentContactList();
+                transaction.add(R.id.activity_detail, fragment, "CurrentFragment").commit();
+            } else if (detailType == DETAIL_CONTACT_ADD) {
+                fragment = new FragmentContactAdd();
                 transaction.add(R.id.activity_detail, fragment, "CurrentFragment").commit();
             }
 

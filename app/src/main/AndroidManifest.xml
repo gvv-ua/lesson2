@@ -47,8 +47,6 @@
                     android:scheme="https"/>
             </intent-filter>
         </activity>
-        <activity android:name=".ActivityContact">
-        </activity>
     </application>
 
 </manifest>
