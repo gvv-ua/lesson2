@@ -4,9 +4,7 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -101,7 +99,7 @@ public class FragmentListView extends Fragment {
                 .setNegativeButton(R.string.go_to_settings, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        openPermissionSettings();
+                        ((ActivityDetail)getActivity()).openPermissionSettings();
                     }
                 })
                 .create()
@@ -129,16 +127,6 @@ public class FragmentListView extends Fragment {
         getActivity().startActivity(intent);
     }
 
-    private void openPermissionSettings() {
-        final Intent intent = new Intent();
-        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-        intent.addCategory(Intent.CATEGORY_DEFAULT);
-        intent.setData(Uri.parse("package:" + getActivity().getPackageName()));
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-        intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-        startActivity(intent);
-    }
 
 
 }
