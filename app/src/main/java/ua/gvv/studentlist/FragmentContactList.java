@@ -150,13 +150,14 @@ public class FragmentContactList extends Fragment  implements LoaderManager.Load
         CursorLoader cursorLoader = null;
         if (id == CONTACT_LOADER_ID) {
             String sortOrder = ContactsContract.Contacts.Entity.DISPLAY_NAME_PRIMARY + " ASC";
+            String selection = ContactsContract.Contacts.Entity.HAS_PHONE_NUMBER + " = ?";
+            String[] selectionArgs = {"1"};
 
             cursorLoader = new CursorLoader(getActivity(),
                     ContactsContract.Contacts.CONTENT_URI,
-                    //ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                     projection,
-                    null,
-                    null,
+                    selection,
+                    selectionArgs,
                     sortOrder);
         }
         return cursorLoader;
