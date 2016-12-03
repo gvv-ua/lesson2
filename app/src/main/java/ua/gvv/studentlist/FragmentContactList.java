@@ -58,7 +58,8 @@ public class FragmentContactList extends Fragment  implements LoaderManager.Load
                         ContactsContract.Contacts._ID,
                         ContactsContract.Contacts.DISPLAY_NAME_PRIMARY,
                         ContactsContract.Contacts.LOOKUP_KEY,
-                        ContactsContract.Contacts.PHOTO_THUMBNAIL_URI
+                        ContactsContract.Contacts.PHOTO_THUMBNAIL_URI,
+                        ContactsContract.Contacts.HAS_PHONE_NUMBER
                 };
 
         contactListView = (RecyclerView)view.findViewById(R.id.contact_list_recycler);
@@ -147,8 +148,8 @@ public class FragmentContactList extends Fragment  implements LoaderManager.Load
             String sortOrder = ContactsContract.Contacts.Entity.DISPLAY_NAME_PRIMARY + " ASC";
 
             cursorLoader = new CursorLoader(getActivity(),
-                    //ContactsContract.Contacts.CONTENT_URI,
-                    ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                    ContactsContract.Contacts.CONTENT_URI,
+                    //ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                     projection,
                     null,
                     null,
