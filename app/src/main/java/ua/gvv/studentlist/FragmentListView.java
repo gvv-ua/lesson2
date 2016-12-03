@@ -1,18 +1,30 @@
 package ua.gvv.studentlist;
 
+import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import ua.gvv.studentlist.data.Student;
+
+import static android.Manifest.permission.READ_CONTACTS;
 
 /**
  * Created by gvv on 30.10.16.
@@ -20,6 +32,7 @@ import ua.gvv.studentlist.data.Student;
 
 public class FragmentListView extends Fragment {
     private ArrayList<Student> students;
+    private final int PERMISSIONS_REQUEST_READ_CONTACTS = 20;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -61,13 +74,72 @@ public class FragmentListView extends Fragment {
         image.setOnClickListener(new View.OnClickListener() {
                                      @Override
                                      public void onClick(View v) {
-                                         Intent intent = new Intent(getActivity(), ActivityDetail.class)
-                                                 .putExtra(ActivityDetail.DETAIL_TYPE, ActivityDetail.DETAIL_CONTACT_LIST);
-                                         getActivity().startActivity(intent);
+                                         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+
+                                             if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.READ_CONTACTS)) {
+                                                 showExplanationDialog();
+                                             } else {
+                                                 ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_CONTACTS},  PERMISSIONS_REQUEST_READ_CONTACTS);
+                                             }
+                                         } else {
+                                             showContactList();
+                                         }
                                      }
                                  }
         );
-
     }
+
+    private void showExplanationDialog() {
+        new AlertDialog.Builder(getActivity())
+                .setMessage(R.string.read_contacts_err)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        ActivityCompat.requestPermissions(getActivity(), new String[]{READ_CONTACTS}, PERMISSIONS_REQUEST_READ_CONTACTS);
+                    }
+                })
+                .setNegativeButton(R.string.go_to_settings, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        openPermissionSettings();
+                    }
+                })
+                .create()
+                .show();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_READ_CONTACTS: {
+                if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    showContactList();
+                } else {
+                    Toast toast = Toast.makeText(getActivity(), "You can't see contact list", Toast.LENGTH_SHORT);
+                    toast.show();
+                }
+                return;
+            }
+        }
+    }
+
+    private void showContactList() {
+        Intent intent = new Intent(getActivity(), ActivityDetail.class)
+                .putExtra(ActivityDetail.DETAIL_TYPE, ActivityDetail.DETAIL_CONTACT_LIST);
+        getActivity().startActivity(intent);
+    }
+
+    private void openPermissionSettings() {
+        final Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        intent.addCategory(Intent.CATEGORY_DEFAULT);
+        intent.setData(Uri.parse("package:" + getActivity().getPackageName()));
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        startActivity(intent);
+    }
+
+
 }
 

@@ -20,4 +20,6 @@
 
     <string name="host_name_git_hub">github.com</string>
     <string name="host_name_google_plus">plus.google.com</string>
+    <string name="read_contacts_err">Does not have permission for read contact list</string>
+    <string name="go_to_settings">Go to settings</string>
 </resources>
