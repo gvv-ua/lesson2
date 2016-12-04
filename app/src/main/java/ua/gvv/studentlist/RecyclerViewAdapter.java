@@ -7,7 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -67,16 +67,16 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     class ViewHolder extends RecyclerView.ViewHolder  implements View.OnClickListener, View.OnLongClickListener {
         private TextView name;
-        private Button button;
+        private ImageView button;
 
         @Override
         public void onClick(View v) {
             if (v.getId() == name.getId()) {
                 Student student = list.get(getAdapterPosition());
-                showDetailInfo(ActivityDetail.DETAIL_GIT_HUB, student.getGitHubName());
+                showDetailInfo(ActivityDetail.DETAIL_GOOGLE_PLUS, student.getGoogleName());
             } else if (v.getId() == button.getId()) {
                 Student student = list.get(getAdapterPosition());
-                showDetailInfo(ActivityDetail.DETAIL_GOOGLE_PLUS, student.getGoogleName());
+                showDetailInfo(ActivityDetail.DETAIL_GIT_HUB, student.getGitHubName());
             }
         }
 
@@ -97,7 +97,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         public ViewHolder(View itemView) {
             super(itemView);
             name = (TextView) itemView.findViewById(R.id.recycler_item_textview);
-            button = (Button) itemView.findViewById(R.id.recycler_item_button);
+            button = (ImageView) itemView.findViewById(R.id.iv_git_hub);
             itemView.setOnClickListener(this);
             name.setOnClickListener(this);
             button.setOnClickListener(this);

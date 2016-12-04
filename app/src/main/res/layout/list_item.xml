@@ -2,26 +2,25 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:id="@+id/list_item"
               android:layout_width="match_parent"
-              android:layout_height="70dp"
-              android:paddingLeft="16dp"
+              android:layout_height="64dp"
+              android:paddingLeft="8dp"
               android:paddingRight="16dp"
               android:orientation="horizontal" >
 
-    <Button
-        android:id="@+id/list_item_button"
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:gravity="center_vertical"
-        android:text="Google+"
-        android:textColor="@color/colorPrimary"
-        android:layout_height="match_parent"/>
+    <ImageView
+        android:id="@+id/iv_google_plus"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_margin="8dp"
+        android:src="@drawable/img_google_plus"
+        android:background="#DC4B3F"
+        />
 
     <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="0dp"
+              android:layout_width="wrap_content"
               android:layout_height="match_parent"
               android:id="@+id/list_item_textview"
-              android:layout_weight="2"
               android:gravity="center_vertical"
-              android:minHeight="100dp" />
+              android:minHeight="72dp" />
 
 </LinearLayout>

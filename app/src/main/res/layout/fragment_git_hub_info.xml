@@ -43,7 +43,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
         android:background="#1F76B6"
-        android:drawableLeft="@drawable/git_hub_logo"
+        android:drawableLeft="@drawable/img_git_hub"
         android:padding="10dp"
         android:text="@string/title_git_hub"
         android:textAlignment="center"

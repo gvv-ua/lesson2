@@ -16,9 +16,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:fabSize="normal"
-        android:src="@drawable/img_contact_add"
+        android:src="@drawable/img_account_plus"
         android:layout_gravity="bottom|end"
-        android:layout_margin="10dp"
+        android:layout_margin="8dp"
         />
 
 </FrameLayout>

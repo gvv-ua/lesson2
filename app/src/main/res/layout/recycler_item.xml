@@ -3,24 +3,26 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:id="@+id/recycler_item"
               android:layout_width="match_parent"
-              android:layout_height="80dp"
+              android:layout_height="64dp"
               android:orientation="horizontal"
-              android:paddingLeft="16dp"
+              android:paddingLeft="8dp"
               android:paddingRight="16dp">
 
-    <Button
-        android:id="@+id/recycler_item_button"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:text="Google+"
-        android:textColor="@color/colorAccent"/>
+    <ImageView
+        android:id="@+id/iv_git_hub"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_margin="8dp"
+        android:src="@drawable/img_git_hub"
+        android:background="#1F76B6"
+        />
 
     <TextView xmlns:android="http://schemas.android.com/apk/res/android"
               android:id="@+id/recycler_item_textview"
-              android:layout_width="0dp"
+              android:layout_width="wrap_content"
               android:layout_height="match_parent"
-              android:layout_weight="2"
-              android:gravity="center_vertical"/>
+              android:gravity="center_vertical"
+              android:minHeight="72dp"
+        />
 </LinearLayout>
 

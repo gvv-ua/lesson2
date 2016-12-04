@@ -1,5 +1,6 @@
 package ua.gvv.studentlist;
 
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,7 +55,13 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         public void bind(Contact contact) {
             name.setText(contact.getName());
             phone.setText(contact.getPhone());
-            photo.setImageURI(contact.getPhoto());
+            Uri photoUri = contact.getPhoto();
+            if (photoUri != null) {
+                photo.setImageURI(photoUri);
+            } else {
+                photo.setImageResource(R.drawable.img_account);
+            }
+
         }
     }
 }

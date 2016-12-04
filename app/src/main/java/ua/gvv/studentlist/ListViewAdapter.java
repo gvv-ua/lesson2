@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -54,9 +54,6 @@ public class ListViewAdapter extends BaseAdapter implements ListAdapter {
 
         TextView listItemText = (TextView)row.findViewById(R.id.list_item_textview);
         listItemText.setText(list.get(position).getName());
-
-        //Handle buttons and add onClickListeners
-        Button button = (Button)row.findViewById(R.id.list_item_button);
         listItemText.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -65,7 +62,9 @@ public class ListViewAdapter extends BaseAdapter implements ListAdapter {
             }
         });
 
-        button.setOnClickListener(new View.OnClickListener(){
+        //Handle buttons and add onClickListeners
+        ImageView ivGooglePlus = (ImageView) row.findViewById(R.id.iv_google_plus);
+        ivGooglePlus.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 Student student = list.get(position);
@@ -75,7 +74,7 @@ public class ListViewAdapter extends BaseAdapter implements ListAdapter {
 
         row.setOnLongClickListener(new LongClcik(position));
         listItemText.setOnLongClickListener(new LongClcik(position));
-        button.setOnLongClickListener(new LongClcik(position));
+        ivGooglePlus.setOnLongClickListener(new LongClcik(position));
         return row;
     }
 

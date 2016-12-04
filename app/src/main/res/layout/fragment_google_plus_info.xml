@@ -35,7 +35,7 @@
         android:layout_height="50dp"
         android:background="#DC4B3F"
         android:layout_marginTop="10dp"
-        android:drawableLeft="@drawable/google_plus_logo"
+        android:drawableLeft="@drawable/img_google_plus"
         android:padding="10dp"
         android:text="@string/title_google_plus"
         android:textAlignment="center"
