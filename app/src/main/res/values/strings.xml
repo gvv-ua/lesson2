@@ -8,7 +8,7 @@
 
     <string name="title_git_hub">GitHub</string>
     <string name="title_google_plus">Google</string>
-    <string name="title_request_image">Select image</string>
+
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="title_activity_detail">ActivityDetail</string>
@@ -22,4 +22,9 @@
     <string name="host_name_google_plus">plus.google.com</string>
     <string name="read_contacts_err">Does not have permission for read contact list</string>
     <string name="go_to_settings">Go to settings</string>
+
+    <string name="title_list_view">ListView</string>
+    <string name="title_recycler_view">RecyclerView</string>
+    <string name="title_contacts">Contacts</string>
+    <string name="title_request_image">Select image</string>
 </resources>

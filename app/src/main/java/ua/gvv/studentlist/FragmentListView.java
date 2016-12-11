@@ -1,6 +1,5 @@
 package ua.gvv.studentlist;
 
-import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -9,12 +8,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -24,10 +21,6 @@ import ua.gvv.studentlist.data.Student;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
-/**
- * Created by gvv on 30.10.16.
- */
-
 public class FragmentListView extends Fragment {
     private ArrayList<Student> students;
     private final int PERMISSIONS_REQUEST_READ_CONTACTS = 20;
@@ -36,8 +29,7 @@ public class FragmentListView extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_list_view, container, false);
-        return rootView;
+        return inflater.inflate(R.layout.fragment_list_view, container, false);
     }
 
     @Override
@@ -54,37 +46,6 @@ public class FragmentListView extends Fragment {
         ListViewAdapter adapter = new ListViewAdapter(getActivity(), students);
         ListView listView = (ListView) view.findViewById(R.id.listview_lesson2);
         listView.setAdapter(adapter);
-
-        //Show FragmentImageSelector
-        ImageView image = (ImageView) view.findViewById(R.id.list_view_image);
-        image.setOnClickListener(new View.OnClickListener() {
-                                     @Override
-                                     public void onClick(View v) {
-                                         Intent intent = new Intent(getActivity(), ActivityDetail.class)
-                                                 .putExtra(ActivityDetail.DETAIL_TYPE, ActivityDetail.DETAIL_IMAGE_SELECTOR);
-                                         getActivity().startActivity(intent);
-                                     }
-                                 }
-        );
-
-        //Show FragmentContactList
-        image = (ImageView) view.findViewById(R.id.list_view_contacts);
-        image.setOnClickListener(new View.OnClickListener() {
-                                     @Override
-                                     public void onClick(View v) {
-                                         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-
-                                             if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.READ_CONTACTS)) {
-                                                 showExplanationDialog();
-                                             } else {
-                                                 ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_CONTACTS},  PERMISSIONS_REQUEST_READ_CONTACTS);
-                                             }
-                                         } else {
-                                             showContactList();
-                                         }
-                                     }
-                                 }
-        );
     }
 
     private void showExplanationDialog() {
@@ -116,7 +77,6 @@ public class FragmentListView extends Fragment {
                     Toast toast = Toast.makeText(getActivity(), "You can't see contact list", Toast.LENGTH_SHORT);
                     toast.show();
                 }
-                return;
             }
         }
     }

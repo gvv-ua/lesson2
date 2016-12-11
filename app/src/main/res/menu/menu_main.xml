@@ -1,7 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/action_switch"
-          android:title="@string/switch_button"></item>
+    <item android:id="@+id/action_list_view"
+          android:title="@string/title_list_view"
+          android:icon="@drawable/img_list_view"
+        />
 
+    <item android:id="@+id/action_recycler_view"
+          android:title="@string/title_recycler_view"
+          android:icon="@drawable/img_recycler_view"
+        />
+
+    <item android:id="@+id/action_contacts"
+          android:title="@string/title_contacts"
+          android:icon="@drawable/img_contacts"
+        />
+
+    <item android:id="@+id/action_image_select"
+          android:title="@string/title_request_image"
+          android:icon="@drawable/img_select"
+        />
 
 </menu>

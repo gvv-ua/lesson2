@@ -4,45 +4,11 @@
              android:layout_height="match_parent"
              android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="48dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:orientation="horizontal"
-        android:weightSum="2">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:gravity="center_vertical"
-            android:text="ListView"
-            android:layout_marginLeft="56dp"
-
-            style="@android:style/TextAppearance.Large"
-            android:textColor="@color/colorPrimary"
-            />
-
-        <ImageView
-            android:id="@+id/list_view_image"
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
-            android:src="@drawable/img_select"
-            />
-        <ImageView
-            android:id="@+id/list_view_contacts"
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
-            android:src="@drawable/img_contacts"
-            />
-    </LinearLayout>
-
     <ListView
         android:id="@+id/listview_lesson2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
+        android:layout_marginBottom="56dp"
         />
 
 </FrameLayout>

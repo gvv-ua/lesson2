@@ -3,12 +3,13 @@ package ua.gvv.studentlist;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,15 +22,17 @@ public class ActivityMain extends AppCompatActivity {
     private static final String FRAGMENT_CURRENT = "CurrentFragment";
     private static final int FRAGMENT_LIST_VIEW = 1;
     private static final int FRAGMENT_RECYCLER_VIEW = 2;
+    private static final int FRAGMENT_CONTACT_LIST = 3;
+    private static final int FRAGMENT_IMAGE_SELECTOR = 4;
 
     private int currentFragment = FRAGMENT_LIST_VIEW;
 
-    private FragmentListView fragList;
-    private FragmentRecyclerView fragRecycler;
 
     private HeadsetReceiver headsetReceiver;
 
-    private ArrayList<Student> students = new ArrayList<Student>(20);
+    private ArrayList<Student> students = new ArrayList<>(20);
+
+    private BottomNavigationView navMain;
 
     private void FillStudentsList() {
         students.add(new Student("Valerii Gubskyi", "107910188078571144657", "gvv-ua"));
@@ -65,58 +68,132 @@ public class ActivityMain extends AppCompatActivity {
             currentFragment = savedInstanceState.getInt(FRAGMENT_CURRENT);
         }
 
-        Bundle args = new Bundle();
-        args.putParcelableArrayList("StudentsList", students);
-        Fragment fragment = getFragmentByType(currentFragment);
-        fragment.setArguments(args);
-
         FragmentManager manager = getSupportFragmentManager();
-        FragmentTransaction transaction = manager.beginTransaction();
-        transaction.add(R.id.activity_main, fragment, "CurrentFragment")
-                .commit();
+        Fragment fragment = manager.findFragmentByTag(FRAGMENT_CURRENT);
+        if (fragment == null) {
+            switch (currentFragment) {
+                case FRAGMENT_LIST_VIEW:
+                    showListView();
+                    break;
+                case FRAGMENT_RECYCLER_VIEW:
+                    showRecyclerView();
+                    break;
+                case FRAGMENT_CONTACT_LIST:
+                    showContactList();
+                    break;
+                case FRAGMENT_IMAGE_SELECTOR:
+                    showImageSelector();
+                    break;
+                default:
+                    showImageSelector();
+            }
+        }
 
         headsetReceiver = new HeadsetReceiver(this);
+
+        navMain = (BottomNavigationView) findViewById(R.id.navMain);
+        setCurrentBottomNavigationItem();
+        navMain.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_list_view:
+                        showListView();
+                        setCurrentBottomNavigationItem();
+                        return true;
+                    case R.id.action_recycler_view:
+                        showRecyclerView();
+                        setCurrentBottomNavigationItem();
+                        return true;
+                    case R.id.action_contacts:
+                        showContactList();
+                        setCurrentBottomNavigationItem();
+                        return true;
+                    case R.id.action_image_select:
+                        showImageSelector();
+                        setCurrentBottomNavigationItem();
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        });
     }
+
+    private void setCurrentBottomNavigationItem() {
+        Menu menuBottom = navMain.getMenu();
+        for (int i = 0; i < menuBottom.size(); i++) {
+            menuBottom.getItem(i).setChecked((currentFragment) -1 == i);
+        }
+    }
+
+    private void showImageSelector() {
+        FragmentManager manager = getSupportFragmentManager();
+        Fragment fragment = manager.findFragmentByTag(FRAGMENT_CURRENT);
+
+        if ((fragment == null) || (!(fragment instanceof FragmentImageSelector))) {
+            fragment = new FragmentImageSelector();
+
+            FragmentTransaction transaction = manager.beginTransaction();
+            transaction.replace(R.id.activity_main, fragment, FRAGMENT_CURRENT)
+                    .commit();
+            currentFragment = FRAGMENT_IMAGE_SELECTOR;
+        }
+    }
+
+    private void showContactList() {
+        FragmentManager manager = getSupportFragmentManager();
+        Fragment fragment = manager.findFragmentByTag(FRAGMENT_CURRENT);
+
+        if ((fragment == null) || (!(fragment instanceof FragmentContactList))) {
+            fragment = new FragmentContactList();
+
+            FragmentTransaction transaction = manager.beginTransaction();
+            transaction.replace(R.id.activity_main, fragment, FRAGMENT_CURRENT)
+                    .commit();
+            currentFragment = FRAGMENT_CONTACT_LIST;
+        }
+    }
+
+    private void showRecyclerView() {
+        FragmentManager manager = getSupportFragmentManager();
+        Fragment fragment = manager.findFragmentByTag(FRAGMENT_CURRENT);
+        if ((fragment == null) || (!(fragment instanceof FragmentRecyclerView))) {
+            Bundle args = new Bundle();
+            args.putParcelableArrayList("StudentsList", students);
+
+            fragment = new FragmentRecyclerView();
+            fragment.setArguments(args);
+
+            FragmentTransaction transaction = manager.beginTransaction();
+            transaction.replace(R.id.activity_main, fragment, FRAGMENT_CURRENT)
+                    .commit();
+            currentFragment = FRAGMENT_RECYCLER_VIEW;
+        }
+    }
+
+    private void showListView() {
+        FragmentManager manager = getSupportFragmentManager();
+        Fragment fragment = manager.findFragmentByTag(FRAGMENT_CURRENT);
+        if ((fragment == null) || (!(fragment instanceof FragmentListView))) {
+            Bundle args = new Bundle();
+            args.putParcelableArrayList("StudentsList", students);
+
+            fragment = new FragmentListView();
+            fragment.setArguments(args);
+
+            FragmentTransaction transaction = manager.beginTransaction();
+            transaction.replace(R.id.activity_main, fragment, FRAGMENT_CURRENT)
+                    .commit();
+            currentFragment = FRAGMENT_LIST_VIEW;
+        }
+    }
+
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putInt(FRAGMENT_CURRENT, currentFragment);
         super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    private Fragment getFragmentByType(int fragmentType) {
-        return (fragmentType == FRAGMENT_RECYCLER_VIEW) ? new FragmentRecyclerView() : new FragmentListView();
-    }
-
-    private int getNextFragmentType() {
-        return (currentFragment == FRAGMENT_RECYCLER_VIEW) ? FRAGMENT_LIST_VIEW : FRAGMENT_RECYCLER_VIEW;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
-        switch (item.getItemId()) {
-            case R.id.action_switch:
-                Bundle args = new Bundle();
-                args.putParcelableArrayList("StudentsList", students);
-                currentFragment = getNextFragmentType();
-                Fragment fragment = getFragmentByType(currentFragment);
-
-                fragment.setArguments(args);
-                FragmentManager manager = getSupportFragmentManager();
-                FragmentTransaction transaction = manager.beginTransaction();
-                transaction.replace(R.id.activity_main, fragment, "CurrentFragment")
-                        .commit();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -136,4 +213,15 @@ public class ActivityMain extends AppCompatActivity {
         IntentFilter filter = new IntentFilter(Intent.ACTION_HEADSET_PLUG);
         registerReceiver(headsetReceiver, filter);
     }
+
+    private Fragment getFragmentByType(int fragmentType) {
+        switch (fragmentType) {
+            case FRAGMENT_LIST_VIEW: return new FragmentListView();
+            case FRAGMENT_RECYCLER_VIEW: return  new FragmentRecyclerView();
+            case FRAGMENT_CONTACT_LIST: return new FragmentContactList();
+            case FRAGMENT_IMAGE_SELECTOR: return new FragmentImageSelector();
+            default: return new FragmentListView();
+        }
+    }
+
 }
