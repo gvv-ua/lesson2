@@ -39,6 +39,14 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         holder.bind(list.get(position));
     }
 
+    public void update(List<Contact> contacts) {
+        list.clear();
+        if (contacts != null) {
+            list.addAll(contacts);
+        }
+        notifyDataSetChanged();
+    }
+
     class ContactViewHolder extends RecyclerView.ViewHolder {
         private TextView name;
         private TextView phone;

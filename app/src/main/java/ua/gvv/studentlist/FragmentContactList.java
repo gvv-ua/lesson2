@@ -2,11 +2,9 @@ package ua.gvv.studentlist;
 
 import android.Manifest;
 import android.content.ContentProviderOperation;
-import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -17,7 +15,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,12 +23,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import ua.gvv.studentlist.data.Contact;
+import ua.gvv.studentlist.data.ContactsDataLoader;
 
 import static android.Manifest.permission.WRITE_CONTACTS;
 import static android.app.Activity.RESULT_OK;
@@ -41,7 +40,7 @@ import static android.content.ContentValues.TAG;
  * Created by gvv on 26.11.16.
  */
 
-public class FragmentContactList extends Fragment  implements LoaderManager.LoaderCallbacks<Cursor> {
+public class FragmentContactList extends Fragment  implements LoaderManager.LoaderCallbacks<List<Contact>> {
     private final static int CONTACT_LOADER_ID = 100;
     private final static int CONTACT_ADD_INFO_ID = 101;
 
@@ -63,21 +62,13 @@ public class FragmentContactList extends Fragment  implements LoaderManager.Load
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getLoaderManager().initLoader(CONTACT_LOADER_ID, null, this);
+        getLoaderManager().initLoader(CONTACT_LOADER_ID, null, this).forceLoad();;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle("Contact List");
-        projection = new String[]
-                {
-                        ContactsContract.Contacts._ID,
-                        ContactsContract.Contacts.DISPLAY_NAME_PRIMARY,
-                        ContactsContract.Contacts.LOOKUP_KEY,
-                        ContactsContract.Contacts.PHOTO_THUMBNAIL_URI,
-                        ContactsContract.Contacts.HAS_PHONE_NUMBER
-                };
 
         contactListView = (RecyclerView)view.findViewById(R.id.contact_list_recycler);
         contactListView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -188,63 +179,31 @@ public class FragmentContactList extends Fragment  implements LoaderManager.Load
     }
 
     @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        CursorLoader cursorLoader = null;
-        if (id == CONTACT_LOADER_ID) {
-            String sortOrder = ContactsContract.Contacts.Entity.DISPLAY_NAME_PRIMARY + " ASC";
-            String selection = ContactsContract.Contacts.Entity.HAS_PHONE_NUMBER + " = ?";
-            String[] selectionArgs = {"1"};
-
-            cursorLoader = new CursorLoader(getActivity(),
-                    ContactsContract.Contacts.CONTENT_URI,
-                    projection,
-                    selection,
-                    selectionArgs,
-                    sortOrder);
-        }
-        return cursorLoader;
+    public Loader<List<Contact>> onCreateLoader(int id, Bundle args) {
+        return new ContactsDataLoader(getActivity());
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        contacts = new ArrayList<>();
-
-        ContentResolver contentResolver = getActivity().getContentResolver();
-        if ((data != null) && (data.moveToFirst())) {
-            while (data.moveToNext()) {
-                Contact contact = new Contact();
-                contact.setName(data.getString(data.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY)));
-                //contact.setPhone("123456");
-                String photo = data.getString(data.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI));
-                if (photo != null) {
-                    contact.setPhoto(Uri.parse(photo));
-                }
-
-                String[] projection = new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER};
-                String selection = ContactsContract.Data.CONTACT_ID + " = ? " +
-                        " and " + ContactsContract.Data.MIMETYPE + " = ? ";
-                String[] selectionArgs = new String[]{data.getString(data.getColumnIndex(ContactsContract.Contacts._ID)), ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE};
-                Cursor cursor = contentResolver.query(ContactsContract.Data.CONTENT_URI,
-                        projection,
-                        selection,
-                        selectionArgs,
-                        null);
-                if ((cursor != null) && (cursor.moveToFirst())) {
-                    contact.setPhone(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
-                }
-                cursor.close();
-
-                contacts.add(contact);
-            }
-            data.close();
-        }
-        ContactListAdapter adapter = new ContactListAdapter(contacts);
-        contactListView.setAdapter(adapter);
-
+    public void onLoadFinished(Loader<List<Contact>> loader, List<Contact> data) {
+        updateUI(data);
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
+    public void onLoaderReset(Loader<List<Contact>> loader) {
+        updateUI(null);
+    }
 
+    public void updateUI(List<Contact> users) {
+        ProgressBar progressBar = (ProgressBar)getActivity().findViewById(R.id.pb_contacts);
+        if (progressBar != null) {
+            progressBar.setVisibility(View.GONE);
+        }
+
+        if (contactListView.getAdapter() == null) {
+            contactListView.setAdapter(new ContactListAdapter(users));
+        } else {
+            ContactListAdapter adapter = (ContactListAdapter) contactListView.getAdapter();
+            adapter.update(users);
+        }
     }
 }

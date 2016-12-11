@@ -19,7 +19,15 @@
         app:fabSize="normal"
         android:src="@drawable/img_account_plus"
         android:layout_gravity="bottom|end"
-        android:layout_margin="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="64dp"
+        />
+
+    <ProgressBar
+        android:id="@+id/pb_contacts"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_gravity="center"
         />
 
 </FrameLayout>
