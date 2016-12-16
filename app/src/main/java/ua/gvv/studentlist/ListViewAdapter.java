@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import ua.gvv.studentlist.data.Student;
 
@@ -21,10 +22,10 @@ import ua.gvv.studentlist.data.Student;
  */
 
 public class ListViewAdapter extends BaseAdapter implements ListAdapter {
-    private ArrayList<Student> list = new ArrayList<Student>();
+    private List<Student> list = new ArrayList<Student>();
     private Context context;
 
-    public ListViewAdapter(Context context, ArrayList<Student> list) {
+    public ListViewAdapter(Context context, List<Student> list) {
         this.context = context;
         this.list = list;
     }

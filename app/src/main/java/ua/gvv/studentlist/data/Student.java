@@ -1,55 +1,45 @@
 package ua.gvv.studentlist.data;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by gvv on 30.10.16.
  */
 
-public class Student implements Parcelable {
+public class Student extends RealmObject {
+    @PrimaryKey
+    private int id;
     private String name;
     private String googleName;
     private String gitHubName;
 
-    public Student(Parcel in) {
-        super();
-        readFromParcel(in);
-    }
+    public Student() { }
 
-    public Student(String name, String googleLink, String githubLink) {
+    public Student(int id, String name, String googleLink, String githubLink) {
+        this.id = id;
         this.name = name;
         this.googleName = googleLink;
         this.gitHubName = githubLink;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(name);
-        dest.writeString(googleName);
-        dest.writeString(gitHubName);
+    public void setGitHubName(String gitHubName) {
+        this.gitHubName = gitHubName;
     }
 
-    public void readFromParcel(Parcel in) {
-        name = in.readString();
-        googleName = in.readString();
-        gitHubName = in.readString();
+    public void setGoogleName(String googleName) {
+        this.googleName = googleName;
     }
 
-    public static final Parcelable.Creator<Student> CREATOR = new Parcelable.Creator<Student>() {
-        public Student createFromParcel(Parcel in) {
-            return new Student(in);
-        }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-        public Student[] newArray(int size) {
-            return new Student[size];
-        }
-    };
+    public int getId() { return id; }
 
     public String getName() {
         return this.name;

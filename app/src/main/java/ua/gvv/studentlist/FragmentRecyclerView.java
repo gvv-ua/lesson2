@@ -9,8 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
-
+import io.realm.Realm;
+import io.realm.RealmChangeListener;
+import io.realm.RealmResults;
 import ua.gvv.studentlist.data.Student;
 
 /**
@@ -18,7 +19,24 @@ import ua.gvv.studentlist.data.Student;
  */
 
 public class FragmentRecyclerView extends Fragment {
-    private ArrayList<Student> students;
+    RecyclerView rvStudents;
+
+    private final RealmChangeListener<RealmResults<Student>> changeListener = new RealmChangeListener<RealmResults<Student>>() {
+        @Override
+        public void onChange(RealmResults<Student> elements) {
+            updateUI(elements);
+        }
+    };
+
+    private void updateUI(RealmResults<Student> elements) {
+        if (rvStudents.getAdapter() == null) {
+            rvStudents.setAdapter(new RecyclerViewAdapter(getActivity(), elements));
+        } else {
+            RecyclerViewAdapter adapter = (RecyclerViewAdapter) rvStudents.getAdapter();
+            adapter.notifyDataSetChanged();
+        }
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -31,17 +49,11 @@ public class FragmentRecyclerView extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Bundle extras = getArguments();
-        if (extras != null) {
-            students = extras.getParcelableArrayList("StudentsList");
-            if (students != null) {
-                Student student = students.get(0);
-            }
-        }
+        rvStudents = (RecyclerView)view.findViewById(R.id.recyclerview_lesson2);
+        rvStudents.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        RecyclerView recyclerView = (RecyclerView)view.findViewById(R.id.recyclerview_lesson2);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        RecyclerViewAdapter adapter = new RecyclerViewAdapter(getContext(), students);
-        recyclerView.setAdapter(adapter);
+        Realm realm = Realm.getDefaultInstance();
+        RealmResults<Student> students = realm.where(Student.class).findAllAsync();
+        students.addChangeListener(changeListener);
     }
 }

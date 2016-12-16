@@ -15,15 +15,36 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-
+import io.realm.Realm;
+import io.realm.RealmChangeListener;
+import io.realm.RealmResults;
 import ua.gvv.studentlist.data.Student;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
 public class FragmentListView extends Fragment {
-    private ArrayList<Student> students;
     private final int PERMISSIONS_REQUEST_READ_CONTACTS = 20;
+
+    ListView lvStudents;
+
+    public FragmentListView() {
+    }
+
+    private final RealmChangeListener<RealmResults<Student>> changeListener = new RealmChangeListener<RealmResults<Student>>() {
+        @Override
+        public void onChange(RealmResults<Student> elements) {
+            updateUI(elements);
+        }
+    };
+
+    private void updateUI(RealmResults<Student> elements) {
+        if (lvStudents.getAdapter() == null) {
+            lvStudents.setAdapter(new ListViewAdapter(getActivity(), elements));
+        } else {
+            ListViewAdapter adapter = (ListViewAdapter) lvStudents.getAdapter();
+            adapter.notifyDataSetChanged();
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -36,16 +57,11 @@ public class FragmentListView extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Bundle extras = getArguments();
-        if (extras != null) {
-            students = extras.getParcelableArrayList("StudentsList");
-            if (students != null) {
-                Student student = students.get(0);
-            }
-        }
-        ListViewAdapter adapter = new ListViewAdapter(getActivity(), students);
-        ListView listView = (ListView) view.findViewById(R.id.listview_lesson2);
-        listView.setAdapter(adapter);
+        lvStudents = (ListView) view.findViewById(R.id.listview_lesson2);
+
+        Realm realm = Realm.getDefaultInstance();
+        RealmResults<Student> students = realm.where(Student.class).findAllAsync();
+        students.addChangeListener(changeListener);
     }
 
     private void showExplanationDialog() {

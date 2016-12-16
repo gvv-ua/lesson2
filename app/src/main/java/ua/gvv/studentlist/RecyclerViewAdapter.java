@@ -24,10 +24,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private List<Student> list;
     private Context context;
 
-    public RecyclerViewAdapter(List<Student> records) {
-        this.list = records;
-    }
-
     public RecyclerViewAdapter(Context context, List<Student> list) {
         this.context = context;
         this.list = list;
@@ -41,13 +37,17 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
-        Student record = list.get(i);
-        viewHolder.name.setText((CharSequence) record.getName());
+        viewHolder.bind(list.get(i));
     }
 
     @Override
     public int getItemCount() {
-        return list.size();
+        return list == null ? 0 : list.size();
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return list.get(position).getId();
     }
 
     private void deleteItemByIndex(int position) {
@@ -59,7 +59,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     private void showDetailInfo(int apiType, String link) {
-        Intent intent = new Intent((ActivityMain)context, ActivityDetail.class)
+        Intent intent = new Intent(context, ActivityDetail.class)
                 .putExtra(ActivityDetail.DETAIL_TYPE, apiType)
                 .putExtra(ActivityDetail.USER, link);
         context.startActivity(intent);
@@ -105,6 +105,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             itemView.setOnLongClickListener(this);
             name.setOnLongClickListener(this);
             button.setOnLongClickListener(this);
+        }
+
+        public void bind(Student student) {
+            name.setText(student.getName());
         }
     }
 
