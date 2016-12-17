@@ -39,6 +39,7 @@ public class FragmentImageSelector extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        getActivity().setTitle("Image Selector");
 
         ImageView image = (ImageView) view.findViewById(R.id.image_selector);
         image.setOnClickListener(new View.OnClickListener() {

@@ -16,7 +16,8 @@ public class App extends Application {
         Realm.init(this);
         RealmConfiguration realmConfig = new RealmConfiguration.Builder()
                 .name("students.realm")
-                .schemaVersion(1)
+                .schemaVersion(2)
+                .migration(new MigrationStudentSearchName())
                 .build();
         Realm.setDefaultConfiguration(realmConfig);
     }

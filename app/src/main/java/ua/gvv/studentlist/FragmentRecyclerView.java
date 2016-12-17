@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
+import io.realm.Sort;
 import ua.gvv.studentlist.data.Student;
 
 /**
@@ -56,12 +57,13 @@ public class FragmentRecyclerView extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        getActivity().setTitle("Recycler View");
 
         rvStudents = (RecyclerView)view.findViewById(R.id.recyclerview_lesson2);
         rvStudents.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         Realm realm = Realm.getDefaultInstance();
-        students = realm.where(Student.class).findAllAsync();
+        students = realm.where(Student.class).findAllSortedAsync("searchName", Sort.ASCENDING);
         students.addChangeListener(changeListener);
 
         setHasOptionsMenu(true);
@@ -93,7 +95,7 @@ public class FragmentRecyclerView extends Fragment {
                 if (!newText.equals(filter)) {
                     Realm realm = Realm.getDefaultInstance();
                     students.removeChangeListeners();
-                    students = realm.where(Student.class).contains("name", newText).findAllAsync();
+                    students = realm.where(Student.class).contains("searchName", newText.toLowerCase()).findAllSortedAsync("searchName", Sort.ASCENDING);
                     students.addChangeListener(changeListener);
                     filter = newText;
                     return true;

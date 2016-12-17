@@ -13,6 +13,7 @@ public class Student extends RealmObject {
     private String name;
     private String googleName;
     private String gitHubName;
+    private String searchName;
 
     public Student() { }
 
@@ -21,6 +22,7 @@ public class Student extends RealmObject {
         this.name = name;
         this.googleName = googleLink;
         this.gitHubName = githubLink;
+        this.searchName = name.toLowerCase();
     }
 
     public void setId(int id) {
@@ -53,4 +55,7 @@ public class Student extends RealmObject {
         return this.gitHubName;
     }
 
+    public String getSearchName() { return searchName; }
+
+    public void setSearchName(String searchName) { this.searchName = searchName; }
 }
