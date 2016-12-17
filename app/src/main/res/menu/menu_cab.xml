@@ -3,12 +3,5 @@
     <item android:id="@+id/menu_delete"
           android:title="@string/action_delete"
     />
-    <!-- menu group -->
-    <!--<group android:id="@+id/group_delete">-->
-        <!--<item android:id="@+id/menu_archive"-->
-              <!--android:title="@string/menu_archive" />-->
-        <!--<item android:id="@+id/menu_delete"-->
-              <!--android:title="@string/menu_delete" />-->
-    <!--</group>-->
 </menu>
 

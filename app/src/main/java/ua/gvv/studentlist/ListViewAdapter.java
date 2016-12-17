@@ -10,11 +10,12 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.Realm;
+import io.realm.RealmResults;
 import ua.gvv.studentlist.data.Student;
 
 /**
@@ -22,6 +23,7 @@ import ua.gvv.studentlist.data.Student;
  */
 
 public class ListViewAdapter extends BaseAdapter implements ListAdapter {
+    private final String TAG = "ListViewAdapter";
     private List<Student> list = new ArrayList<Student>();
     private Context context;
 
@@ -32,7 +34,7 @@ public class ListViewAdapter extends BaseAdapter implements ListAdapter {
 
     @Override
     public int getCount() {
-        return list.size();
+        return list == null ? 0 : list.size();
     }
 
     @Override
@@ -42,7 +44,7 @@ public class ListViewAdapter extends BaseAdapter implements ListAdapter {
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return list.get(position).getId();
     }
 
     @Override
@@ -79,12 +81,15 @@ public class ListViewAdapter extends BaseAdapter implements ListAdapter {
         return row;
     }
 
-    private void deleteItemByIndex(int position) {
-        Student student = list.get(position);
-        list.remove(position);
+    private void deleteItemByIndex(final int position) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                ((RealmResults<Student>)list).deleteFromRealm(position);
+            }
+        }) ;
         notifyDataSetChanged();
-        Toast toast = Toast.makeText(context, student.getName() + " has been deleted from list!", Toast.LENGTH_SHORT);
-        toast.show();
     }
 
     private void showDetailInfo(int apiType, String link) {

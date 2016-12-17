@@ -8,6 +8,8 @@
     android:layout_height="match_parent"
     tools:context="ua.gvv.studentlist.ActivityMain">
 
+    <include layout="@layout/tool_bar_main" />
+
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navMain"
         android:layout_width="match_parent"

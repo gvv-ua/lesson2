@@ -9,10 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
+import io.realm.Realm;
+import io.realm.RealmResults;
 import ua.gvv.studentlist.data.Student;
 
 /**
@@ -46,16 +47,17 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     @Override
-    public long getItemId(int position) {
-        return list.get(position).getId();
-    }
+    public long getItemId(int position) { return list.get(position).getId(); }
 
-    private void deleteItemByIndex(int position) {
-        Student student = list.get(position);
-        list.remove(position);
+    private void deleteItemByIndex(final int position) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                ((RealmResults<Student>)list).deleteFromRealm(position);
+            }
+        }) ;
         notifyDataSetChanged();
-        Toast toast = Toast.makeText(context, student.getName() + " has been deleted from list!", Toast.LENGTH_SHORT);
-        toast.show();
     }
 
     private void showDetailInfo(int apiType, String link) {

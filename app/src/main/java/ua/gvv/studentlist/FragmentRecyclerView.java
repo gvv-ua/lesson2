@@ -3,9 +3,14 @@ package ua.gvv.studentlist;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -20,6 +25,8 @@ import ua.gvv.studentlist.data.Student;
 
 public class FragmentRecyclerView extends Fragment {
     RecyclerView rvStudents;
+    private String filter = "";
+    RealmResults<Student> students;
 
     private final RealmChangeListener<RealmResults<Student>> changeListener = new RealmChangeListener<RealmResults<Student>>() {
         @Override
@@ -29,12 +36,13 @@ public class FragmentRecyclerView extends Fragment {
     };
 
     private void updateUI(RealmResults<Student> elements) {
-        if (rvStudents.getAdapter() == null) {
-            rvStudents.setAdapter(new RecyclerViewAdapter(getActivity(), elements));
-        } else {
-            RecyclerViewAdapter adapter = (RecyclerViewAdapter) rvStudents.getAdapter();
-            adapter.notifyDataSetChanged();
-        }
+        rvStudents.setAdapter(new RecyclerViewAdapter(getActivity(), elements));
+//        if (rvStudents.getAdapter() == null) {
+//            rvStudents.setAdapter(new RecyclerViewAdapter(getActivity(), elements));
+//        } else {
+//            RecyclerViewAdapter adapter = (RecyclerViewAdapter) rvStudents.getAdapter();
+//            adapter.notifyDataSetChanged();
+//        }
     }
 
 
@@ -53,7 +61,47 @@ public class FragmentRecyclerView extends Fragment {
         rvStudents.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         Realm realm = Realm.getDefaultInstance();
-        RealmResults<Student> students = realm.where(Student.class).findAllAsync();
+        students = realm.where(Student.class).findAllAsync();
         students.addChangeListener(changeListener);
+
+        setHasOptionsMenu(true);
     }
+
+    @Override
+    public void onDestroyView() {
+        students.removeChangeListeners();
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+
+        inflater.inflate(R.menu.menu_tool_bar, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView =
+                (SearchView) MenuItemCompat.getActionView(searchItem);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (!newText.equals(filter)) {
+                    Realm realm = Realm.getDefaultInstance();
+                    students.removeChangeListeners();
+                    students = realm.where(Student.class).contains("name", newText).findAllAsync();
+                    students.addChangeListener(changeListener);
+                    filter = newText;
+                    return true;
+                }
+                return false;
+            }
+        });
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
 }
