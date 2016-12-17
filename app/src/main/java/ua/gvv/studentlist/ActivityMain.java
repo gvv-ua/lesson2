@@ -207,16 +207,6 @@ public class ActivityMain extends AppCompatActivity {
         registerReceiver(headsetReceiver, filter);
     }
 
-    private Fragment getFragmentByType(int fragmentType) {
-        switch (fragmentType) {
-            case FRAGMENT_LIST_VIEW: return new FragmentListView();
-            case FRAGMENT_RECYCLER_VIEW: return  new FragmentRecyclerView();
-            case FRAGMENT_CONTACT_LIST: return new FragmentContactList();
-            case FRAGMENT_IMAGE_SELECTOR: return new FragmentImageSelector();
-            default: return new FragmentListView();
-        }
-    }
-
     private void saveUsers(final List<Student> students) {
         realm.executeTransactionAsync(new Realm.Transaction() {
             @Override
@@ -230,6 +220,4 @@ public class ActivityMain extends AppCompatActivity {
             }
         });
     }
-
-
 }

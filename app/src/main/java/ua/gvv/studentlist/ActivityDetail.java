@@ -7,7 +7,6 @@ import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -125,17 +124,6 @@ public class ActivityDetail extends AppCompatActivity {
         Intent chooserIntent = Intent.createChooser(list.remove(0), "Select App");
         chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, list.toArray(new Parcelable[]{}));
         startActivity(chooserIntent);
-    }
-
-    void openPermissionSettings() {
-        final Intent intent = new Intent();
-        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-        intent.addCategory(Intent.CATEGORY_DEFAULT);
-        intent.setData(Uri.parse("package:" + this.getPackageName()));
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-        intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-        startActivity(intent);
     }
 
 }

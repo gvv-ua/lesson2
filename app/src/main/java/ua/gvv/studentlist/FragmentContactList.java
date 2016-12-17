@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -32,9 +33,9 @@ import java.util.List;
 import ua.gvv.studentlist.data.Contact;
 import ua.gvv.studentlist.data.ContactsDataLoader;
 
+import static android.Manifest.permission.READ_CONTACTS;
 import static android.Manifest.permission.WRITE_CONTACTS;
 import static android.app.Activity.RESULT_OK;
-import static android.content.ContentValues.TAG;
 
 /**
  * Created by gvv on 26.11.16.
@@ -44,13 +45,13 @@ public class FragmentContactList extends Fragment  implements LoaderManager.Load
     private final static int CONTACT_LOADER_ID = 100;
     private final static int CONTACT_ADD_INFO_ID = 101;
 
+    private boolean isReturnedFromSettings = false;
+
+    private final int PERMISSIONS_REQUEST_READ_CONTACTS = 20;
     private final int PERMISSIONS_REQUEST_WRITE_CONTACTS = 21;
+    private final String TAG = "FragmentContactList";
 
-
-    private Uri contactUri;
-    private String[] projection;
-    private RecyclerView contactListView;
-    private List<Contact> contacts;
+    private RecyclerView rvContacs;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -62,7 +63,7 @@ public class FragmentContactList extends Fragment  implements LoaderManager.Load
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getLoaderManager().initLoader(CONTACT_LOADER_ID, null, this).forceLoad();;
+        checkContactReadPermission();
     }
 
     @Override
@@ -70,8 +71,8 @@ public class FragmentContactList extends Fragment  implements LoaderManager.Load
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle("Contact List");
 
-        contactListView = (RecyclerView)view.findViewById(R.id.contact_list_recycler);
-        contactListView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvContacs = (RecyclerView)view.findViewById(R.id.contact_list_recycler);
+        rvContacs.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         FloatingActionButton fabAdd = (FloatingActionButton) view.findViewById(R.id.fab_contact_item_add);
         fabAdd.setOnClickListener(new View.OnClickListener() {
@@ -80,7 +81,7 @@ public class FragmentContactList extends Fragment  implements LoaderManager.Load
                                          if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
 
                                              if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.WRITE_CONTACTS)) {
-                                                 showExplanationDialog();
+                                                 showWriteContactExplanationDialog();
                                              } else {
                                                  ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_CONTACTS},  PERMISSIONS_REQUEST_WRITE_CONTACTS);
                                              }
@@ -89,22 +90,57 @@ public class FragmentContactList extends Fragment  implements LoaderManager.Load
                                          }
                                      }
                                  }
-    );
+        );
     }
 
-    private void showExplanationDialog() {
+    private void loadContactList() {
+        getLoaderManager().initLoader(CONTACT_LOADER_ID, null, this).forceLoad();;
+    }
+
+    private void checkContactReadPermission() {
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            if (shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS)) {
+                showReadContactExplanationDialog();
+            } else {
+                requestPermissions(new String[]{Manifest.permission.READ_CONTACTS},  PERMISSIONS_REQUEST_READ_CONTACTS);
+            }
+        } else {
+            loadContactList();
+        }
+    }
+
+    private void showReadContactExplanationDialog() {
         new AlertDialog.Builder(getActivity())
                 .setMessage(R.string.read_contacts_err)
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        ActivityCompat.requestPermissions(getActivity(), new String[]{WRITE_CONTACTS}, PERMISSIONS_REQUEST_WRITE_CONTACTS);
+                        requestPermissions(new String[]{READ_CONTACTS}, PERMISSIONS_REQUEST_READ_CONTACTS);
                     }
                 })
                 .setNegativeButton(R.string.go_to_settings, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        ((ActivityDetail)getActivity()).openPermissionSettings();
+                        openPermissionSettings();
+                    }
+                })
+                .create()
+                .show();
+    }
+
+    private void showWriteContactExplanationDialog() {
+        new AlertDialog.Builder(getActivity())
+                .setMessage(R.string.read_contacts_err)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        requestPermissions(new String[]{WRITE_CONTACTS}, PERMISSIONS_REQUEST_WRITE_CONTACTS);
+                    }
+                })
+                .setNegativeButton(R.string.go_to_settings, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        openPermissionSettings();
                     }
                 })
                 .create()
@@ -120,12 +156,20 @@ public class FragmentContactList extends Fragment  implements LoaderManager.Load
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
+            case PERMISSIONS_REQUEST_READ_CONTACTS: {
+                if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    loadContactList();
+                } else {
+                    updateUI(null);
+                    Toast.makeText(getActivity(), "You can't see contact list", Toast.LENGTH_SHORT).show();
+                }
+                return;
+            }
             case PERMISSIONS_REQUEST_WRITE_CONTACTS: {
                 if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                     addContact();
                 } else {
-                    Toast toast = Toast.makeText(getActivity(), "You can't see contact list", Toast.LENGTH_SHORT);
-                    toast.show();
+                    Toast.makeText(getActivity(), "You can't modify contact list", Toast.LENGTH_SHORT).show();
                 }
                 return;
             }
@@ -134,7 +178,6 @@ public class FragmentContactList extends Fragment  implements LoaderManager.Load
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
         if ((requestCode == CONTACT_ADD_INFO_ID) && (resultCode == RESULT_OK) && (data != null)) {
             String name = data.getStringExtra("name");
             String phone = data.getStringExtra("phone");
@@ -175,23 +218,16 @@ public class FragmentContactList extends Fragment  implements LoaderManager.Load
             }
 
         }
-
     }
 
     @Override
-    public Loader<List<Contact>> onCreateLoader(int id, Bundle args) {
-        return new ContactsDataLoader(getActivity());
-    }
+    public Loader<List<Contact>> onCreateLoader(int id, Bundle args) { return new ContactsDataLoader(getActivity()); }
 
     @Override
-    public void onLoadFinished(Loader<List<Contact>> loader, List<Contact> data) {
-        updateUI(data);
-    }
+    public void onLoadFinished(Loader<List<Contact>> loader, List<Contact> data) { updateUI(data); }
 
     @Override
-    public void onLoaderReset(Loader<List<Contact>> loader) {
-        updateUI(null);
-    }
+    public void onLoaderReset(Loader<List<Contact>> loader) { updateUI(null); }
 
     public void updateUI(List<Contact> users) {
         ProgressBar progressBar = (ProgressBar)getActivity().findViewById(R.id.pb_contacts);
@@ -199,11 +235,39 @@ public class FragmentContactList extends Fragment  implements LoaderManager.Load
             progressBar.setVisibility(View.GONE);
         }
 
-        if (contactListView.getAdapter() == null) {
-            contactListView.setAdapter(new ContactListAdapter(users));
-        } else {
-            ContactListAdapter adapter = (ContactListAdapter) contactListView.getAdapter();
-            adapter.update(users);
+        if (users != null) {
+            if (rvContacs.getAdapter() == null) {
+                rvContacs.setAdapter(new ContactListAdapter(users));
+            } else {
+                ContactListAdapter adapter = (ContactListAdapter) rvContacs.getAdapter();
+                adapter.update(users);
+            }
+        }
+    }
+
+    void openPermissionSettings() {
+        final Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        intent.addCategory(Intent.CATEGORY_DEFAULT);
+        intent.setData(Uri.parse("package:" + getActivity().getPackageName()));
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+
+        startActivity(intent);
+        isReturnedFromSettings = true; //Because onActivityResult is called immediately
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (isReturnedFromSettings) {
+            isReturnedFromSettings = false;
+            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+                loadContactList();
+            } else {
+                updateUI(null);
+            }
         }
     }
 }
