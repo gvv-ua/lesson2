@@ -17,11 +17,16 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -35,6 +40,7 @@ import ua.gvv.studentlist.data.ContactsDataLoader;
 
 import static android.Manifest.permission.READ_CONTACTS;
 import static android.Manifest.permission.WRITE_CONTACTS;
+import static android.R.attr.filter;
 import static android.app.Activity.RESULT_OK;
 
 /**
@@ -73,6 +79,8 @@ public class FragmentContactList extends Fragment  implements LoaderManager.Load
 
         rvContacs = (RecyclerView)view.findViewById(R.id.contact_list_recycler);
         rvContacs.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        setHasOptionsMenu(true);
 
         FloatingActionButton fabAdd = (FloatingActionButton) view.findViewById(R.id.fab_contact_item_add);
         fabAdd.setOnClickListener(new View.OnClickListener() {
@@ -269,5 +277,34 @@ public class FragmentContactList extends Fragment  implements LoaderManager.Load
                 updateUI(null);
             }
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_tool_bar, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (!newText.equals(filter)) {
+                    ContactListAdapter adapter = (ContactListAdapter) rvContacs.getAdapter();
+                    if (adapter != null) {
+                        adapter.getFilter().filter(newText);
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+
+        super.onCreateOptionsMenu(menu, inflater);
     }
 }

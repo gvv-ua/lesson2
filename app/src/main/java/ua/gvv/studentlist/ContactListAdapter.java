@@ -5,9 +5,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ua.gvv.studentlist.data.Contact;
@@ -16,11 +19,14 @@ import ua.gvv.studentlist.data.Contact;
  * Created by gvv on 27.11.16.
  */
 
-public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.ContactViewHolder> {
+public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.ContactViewHolder> implements Filterable {
     private List<Contact> list;
+    private List<Contact> original;
+    private String filter = "";
 
     public ContactListAdapter(List<Contact> list) {
         this.list = list;
+        this.original = new ArrayList<Contact>(list);
     }
 
     @Override
@@ -45,6 +51,32 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
             list.addAll(contacts);
         }
         notifyDataSetChanged();
+    }
+
+    @Override
+    public Filter getFilter() {
+        Filter filter = new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+                list.clear();
+                final FilterResults results = new FilterResults();
+                for (final Contact contact : original) {
+                    if (contact.getName().toLowerCase().trim().contains(charSequence.toString().toLowerCase())) {
+                        list.add(contact);
+                    }
+                }
+                results.values = list;
+                results.count = list.size();
+                return results;
+            }
+
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                notifyDataSetChanged();
+            }
+        };
+
+        return filter;
     }
 
     class ContactViewHolder extends RecyclerView.ViewHolder {
