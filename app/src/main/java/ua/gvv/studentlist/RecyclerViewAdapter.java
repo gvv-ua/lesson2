@@ -2,7 +2,6 @@ package ua.gvv.studentlist;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,12 +14,13 @@ import java.util.List;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import ua.gvv.studentlist.data.Student;
+import ua.gvv.studentlist.helper.RecyclerViewAdapterItemTouchHelper;
 
 /**
  * Created by gvv on 30.10.16.
  */
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
+public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> implements RecyclerViewAdapterItemTouchHelper {
 
     private List<Student> list;
     private Context context;
@@ -28,6 +28,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public RecyclerViewAdapter(Context context, List<Student> list) {
         this.context = context;
         this.list = list;
+        setHasStableIds(true);
     }
 
     @Override
@@ -56,7 +57,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             public void execute(Realm realm) {
                 ((RealmResults<Student>)list).deleteFromRealm(position);
             }
-        }) ;
+        });
         notifyDataSetChanged();
     }
 
@@ -67,7 +68,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         context.startActivity(intent);
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder  implements View.OnClickListener, View.OnLongClickListener {
+    @Override
+    public void onItemDismiss(int position) {
+        deleteItemByIndex(position);
+    }
+
+    class ViewHolder extends RecyclerView.ViewHolder  implements View.OnClickListener {
         private TextView name;
         private ImageView button;
 
@@ -82,19 +88,19 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             }
         }
 
-        @Override
-        public boolean onLongClick(View v) {
-            String studentName = list.get(getAdapterPosition()).getName();
-            Snackbar snackbar = Snackbar.make(v, studentName, Snackbar.LENGTH_LONG);
-            snackbar.setAction(R.string.action_delete, new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    deleteItemByIndex(getAdapterPosition());
-                }
-            });
-            snackbar.show();
-            return true;
-        }
+//        @Override
+//        public boolean onLongClick(View v) {
+//            String studentName = list.get(getAdapterPosition()).getName();
+//            Snackbar snackbar = Snackbar.make(v, studentName, Snackbar.LENGTH_LONG);
+//            snackbar.setAction(R.string.action_delete, new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    deleteItemByIndex(getAdapterPosition());
+//                }
+//            });
+//            snackbar.show();
+//            return true;
+//        }
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -103,10 +109,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             itemView.setOnClickListener(this);
             name.setOnClickListener(this);
             button.setOnClickListener(this);
-
-            itemView.setOnLongClickListener(this);
-            name.setOnLongClickListener(this);
-            button.setOnLongClickListener(this);
+//
+//            itemView.setOnLongClickListener(this);
+//            name.setOnLongClickListener(this);
+//            button.setOnLongClickListener(this);
         }
 
         public void bind(Student student) {
