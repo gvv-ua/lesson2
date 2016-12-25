@@ -8,6 +8,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -25,16 +26,17 @@ import ua.gvv.studentlist.data.Student;
 public class ActivityMain extends AppCompatActivity {
     private static final String FRAGMENT_CURRENT = "CurrentFragment";
     private static final String TAG = "ActivityMain";
-    private static final int FRAGMENT_LIST_VIEW = 1;
-    private static final int FRAGMENT_RECYCLER_VIEW = 2;
+    private static final int FRAGMENT_RECYCLER_VIEW = 1;
+    private static final int FRAGMENT_LIST_VIEW = 2;
     private static final int FRAGMENT_CONTACT_LIST = 3;
     private static final int FRAGMENT_IMAGE_SELECTOR = 4;
 
-    private int currentFragment = FRAGMENT_LIST_VIEW;
+    private int currentFragment = FRAGMENT_RECYCLER_VIEW;
 
     private HeadsetReceiver headsetReceiver;
 
     private BottomNavigationView navMain;
+    private Toolbar tbMain;
     private Realm realm;
 
     private List<Student> getStudentsList() {
@@ -77,6 +79,8 @@ public class ActivityMain extends AppCompatActivity {
         if (savedInstanceState != null) {
             currentFragment = savedInstanceState.getInt(FRAGMENT_CURRENT);
         }
+        navMain = (BottomNavigationView) findViewById(R.id.navMain);
+        tbMain = (Toolbar) findViewById(R.id.tbar_main);
 
         FragmentManager manager = getSupportFragmentManager();
         Fragment fragment = manager.findFragmentByTag(FRAGMENT_CURRENT);
@@ -101,7 +105,7 @@ public class ActivityMain extends AppCompatActivity {
 
         headsetReceiver = new HeadsetReceiver(this);
 
-        navMain = (BottomNavigationView) findViewById(R.id.navMain);
+
         setCurrentBottomNavigationItem();
         navMain.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -152,6 +156,10 @@ public class ActivityMain extends AppCompatActivity {
             transaction.replace(R.id.activity_main, new FragmentImageSelector(), FRAGMENT_CURRENT)
                     .commit();
             currentFragment = FRAGMENT_IMAGE_SELECTOR;
+
+            int color = ContextCompat.getColor(this, R.color.colorImageSelector);
+            navMain.setBackgroundColor(color);
+            tbMain.setBackgroundColor(color);
         }
     }
 
@@ -165,6 +173,10 @@ public class ActivityMain extends AppCompatActivity {
             transaction.replace(R.id.activity_main, new FragmentContactList(), FRAGMENT_CURRENT)
                     .commit();
             currentFragment = FRAGMENT_CONTACT_LIST;
+
+            int color = ContextCompat.getColor(this, R.color.colorContactList);
+            navMain.setBackgroundColor(color);
+            tbMain.setBackgroundColor(color);
         }
     }
 
@@ -177,6 +189,10 @@ public class ActivityMain extends AppCompatActivity {
             transaction.replace(R.id.activity_main, new FragmentRecyclerView(), FRAGMENT_CURRENT)
                     .commit();
             currentFragment = FRAGMENT_RECYCLER_VIEW;
+
+            int color = ContextCompat.getColor(this, R.color.colorRecyclerView);
+            navMain.setBackgroundColor(color);
+            tbMain.setBackgroundColor(color);
         }
     }
 
@@ -190,9 +206,12 @@ public class ActivityMain extends AppCompatActivity {
             transaction.replace(R.id.activity_main, new FragmentListView(), FRAGMENT_CURRENT)
                     .commit();
             currentFragment = FRAGMENT_LIST_VIEW;
+
+            int color = ContextCompat.getColor(this, R.color.colorListView);
+            navMain.setBackgroundColor(color);
+            tbMain.setBackgroundColor(color);
         }
     }
-
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
