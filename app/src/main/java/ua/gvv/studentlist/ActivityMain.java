@@ -128,15 +128,18 @@ public class ActivityMain extends AppCompatActivity {
                 }
             }
         });
-
-
     }
 
     private void setCurrentBottomNavigationItem() {
+//        v25.0.1
+//        Menu menuBottom = navMain.getMenu();
+//        for (int i = 0; i < menuBottom.size(); i++) {
+//            menuBottom.getItem(i).setChecked((currentFragment) -1 == i);
+//        }
+
+//        v25.1.0
         Menu menuBottom = navMain.getMenu();
-        for (int i = 0; i < menuBottom.size(); i++) {
-            menuBottom.getItem(i).setChecked((currentFragment) -1 == i);
-        }
+        menuBottom.getItem((currentFragment) -1).setChecked(true);
     }
 
     private void showImageSelector() {
@@ -145,6 +148,7 @@ public class ActivityMain extends AppCompatActivity {
 
         if ((fragment == null) || (!(fragment instanceof FragmentImageSelector))) {
             FragmentTransaction transaction = manager.beginTransaction();
+            transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
             transaction.replace(R.id.activity_main, new FragmentImageSelector(), FRAGMENT_CURRENT)
                     .commit();
             currentFragment = FRAGMENT_IMAGE_SELECTOR;
@@ -157,6 +161,7 @@ public class ActivityMain extends AppCompatActivity {
 
         if ((fragment == null) || (!(fragment instanceof FragmentContactList))) {
             FragmentTransaction transaction = manager.beginTransaction();
+            transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
             transaction.replace(R.id.activity_main, new FragmentContactList(), FRAGMENT_CURRENT)
                     .commit();
             currentFragment = FRAGMENT_CONTACT_LIST;
@@ -168,6 +173,7 @@ public class ActivityMain extends AppCompatActivity {
         Fragment fragment = manager.findFragmentByTag(FRAGMENT_CURRENT);
         if ((fragment == null) || (!(fragment instanceof FragmentRecyclerView))) {
             FragmentTransaction transaction = manager.beginTransaction();
+            transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
             transaction.replace(R.id.activity_main, new FragmentRecyclerView(), FRAGMENT_CURRENT)
                     .commit();
             currentFragment = FRAGMENT_RECYCLER_VIEW;
@@ -180,6 +186,7 @@ public class ActivityMain extends AppCompatActivity {
         if ((fragment == null) || (!(fragment instanceof FragmentListView))) {
 
             FragmentTransaction transaction = manager.beginTransaction();
+            transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
             transaction.replace(R.id.activity_main, new FragmentListView(), FRAGMENT_CURRENT)
                     .commit();
             currentFragment = FRAGMENT_LIST_VIEW;
@@ -224,4 +231,6 @@ public class ActivityMain extends AppCompatActivity {
             }
         });
     }
+
+
 }

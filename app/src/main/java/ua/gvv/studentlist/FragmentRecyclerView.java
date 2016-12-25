@@ -33,6 +33,7 @@ public class FragmentRecyclerView extends Fragment {
     RecyclerView rvStudents;
     private String filter = "";
     RealmResults<Student> students;
+    private final String TAG = "FragmentRecyclerView";
 
     private final RealmChangeListener<RealmResults<Student>> changeListener = new RealmChangeListener<RealmResults<Student>>() {
         @Override
@@ -95,6 +96,8 @@ public class FragmentRecyclerView extends Fragment {
                 return true;
             }
         });
+
+        setHasOptionsMenu(true);
     }
 
     @Override
