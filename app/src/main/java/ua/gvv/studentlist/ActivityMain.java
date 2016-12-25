@@ -86,26 +86,10 @@ public class ActivityMain extends AppCompatActivity {
         FragmentManager manager = getSupportFragmentManager();
         Fragment fragment = manager.findFragmentByTag(FRAGMENT_CURRENT);
         if (fragment == null) {
-            switch (currentFragment) {
-                case FRAGMENT_LIST_VIEW:
-                    showListView();
-                    break;
-                case FRAGMENT_RECYCLER_VIEW:
-                    showRecyclerView();
-                    break;
-                case FRAGMENT_CONTACT_LIST:
-                    showContactList();
-                    break;
-                case FRAGMENT_IMAGE_SELECTOR:
-                    showImageSelector();
-                    break;
-                default:
-                    showImageSelector();
-            }
+            showFragment(currentFragment);
         }
 
         headsetReceiver = new HeadsetReceiver(this);
-
 
         setCurrentBottomNavigationItem();
         navMain.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -113,20 +97,16 @@ public class ActivityMain extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.action_list_view:
-                        showListView();
-                        setCurrentBottomNavigationItem();
+                        showFragment(FRAGMENT_LIST_VIEW);
                         return true;
                     case R.id.action_recycler_view:
-                        showRecyclerView();
-                        setCurrentBottomNavigationItem();
+                        showFragment(FRAGMENT_RECYCLER_VIEW);
                         return true;
                     case R.id.action_contacts:
-                        showContactList();
-                        setCurrentBottomNavigationItem();
+                        showFragment(FRAGMENT_CONTACT_LIST);
                         return true;
                     case R.id.action_image_select:
-                        showImageSelector();
-                        setCurrentBottomNavigationItem();
+                        showFragment(FRAGMENT_IMAGE_SELECTOR);
                         return true;
                     default:
                         return false;
@@ -151,54 +131,33 @@ public class ActivityMain extends AppCompatActivity {
         tbMain.setBackgroundColor(color);
     }
 
-    private void showImageSelector() {
+    private void showFragment(int fragmentType) {
         FragmentManager manager = getSupportFragmentManager();
         Fragment fragment = manager.findFragmentByTag(FRAGMENT_CURRENT);
 
-        if ((fragment == null) || (!(fragment instanceof FragmentImageSelector))) {
+        if ((fragment == null)
+                || ((fragmentType == FRAGMENT_IMAGE_SELECTOR) && !(fragment instanceof FragmentImageSelector))
+                || ((fragmentType == FRAGMENT_LIST_VIEW) && !(fragment instanceof FragmentListView))
+                || ((fragmentType == FRAGMENT_RECYCLER_VIEW) && !(fragment instanceof FragmentRecyclerView))
+                || ((fragmentType == FRAGMENT_CONTACT_LIST) && !(fragment instanceof FragmentContactList))
+                ) {
+            switch (fragmentType) {
+                case FRAGMENT_RECYCLER_VIEW: fragment = new FragmentRecyclerView();
+                    break;
+                case FRAGMENT_LIST_VIEW: fragment = new FragmentListView();
+                    break;
+                case FRAGMENT_CONTACT_LIST: fragment = new FragmentContactList();
+                    break;
+                case FRAGMENT_IMAGE_SELECTOR: fragment = new FragmentImageSelector();
+                    break;
+                default: fragment = new FragmentRecyclerView();
+            }
             FragmentTransaction transaction = manager.beginTransaction();
             transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
-            transaction.replace(R.id.frame_main, new FragmentImageSelector(), FRAGMENT_CURRENT)
+            transaction.replace(R.id.frame_main, fragment, FRAGMENT_CURRENT)
                     .commit();
-            currentFragment = FRAGMENT_IMAGE_SELECTOR;
-        }
-    }
-
-    private void showContactList() {
-        FragmentManager manager = getSupportFragmentManager();
-        Fragment fragment = manager.findFragmentByTag(FRAGMENT_CURRENT);
-
-        if ((fragment == null) || (!(fragment instanceof FragmentContactList))) {
-            FragmentTransaction transaction = manager.beginTransaction();
-            transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
-            transaction.replace(R.id.frame_main, new FragmentContactList(), FRAGMENT_CURRENT)
-                    .commit();
-            currentFragment = FRAGMENT_CONTACT_LIST;
-        }
-    }
-
-    private void showRecyclerView() {
-        FragmentManager manager = getSupportFragmentManager();
-        Fragment fragment = manager.findFragmentByTag(FRAGMENT_CURRENT);
-        if ((fragment == null) || (!(fragment instanceof FragmentRecyclerView))) {
-            FragmentTransaction transaction = manager.beginTransaction();
-            transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
-            transaction.replace(R.id.frame_main, new FragmentRecyclerView(), FRAGMENT_CURRENT)
-                    .commit();
-            currentFragment = FRAGMENT_RECYCLER_VIEW;
-        }
-    }
-
-    private void showListView() {
-        FragmentManager manager = getSupportFragmentManager();
-        Fragment fragment = manager.findFragmentByTag(FRAGMENT_CURRENT);
-        if ((fragment == null) || (!(fragment instanceof FragmentListView))) {
-
-            FragmentTransaction transaction = manager.beginTransaction();
-            transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
-            transaction.replace(R.id.frame_main, new FragmentListView(), FRAGMENT_CURRENT)
-                    .commit();
-            currentFragment = FRAGMENT_LIST_VIEW;
+            currentFragment = fragmentType;
+            setCurrentBottomNavigationItem();
         }
     }
 
