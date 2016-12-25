@@ -9,4 +9,11 @@
     <color name="colorContactList">#02786C</color>
     <color name="colorImageSelector">#8C8C8C</color>
 
+    <integer-array name="tabColors">
+        <item>@color/colorRecyclerView</item>
+        <item>@color/colorListView</item>
+        <item>@color/colorContactList</item>
+        <item>@color/colorImageSelector</item>
+    </integer-array>
+
 </resources>

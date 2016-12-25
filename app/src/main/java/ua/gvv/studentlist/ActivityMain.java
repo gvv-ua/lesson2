@@ -8,7 +8,6 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -32,6 +31,7 @@ public class ActivityMain extends AppCompatActivity {
     private static final int FRAGMENT_IMAGE_SELECTOR = 4;
 
     private int currentFragment = FRAGMENT_RECYCLER_VIEW;
+    private int[] tabColors;
 
     private HeadsetReceiver headsetReceiver;
 
@@ -81,6 +81,7 @@ public class ActivityMain extends AppCompatActivity {
         }
         navMain = (BottomNavigationView) findViewById(R.id.navMain);
         tbMain = (Toolbar) findViewById(R.id.tbar_main);
+        tabColors = getResources().getIntArray(R.array.tabColors);
 
         FragmentManager manager = getSupportFragmentManager();
         Fragment fragment = manager.findFragmentByTag(FRAGMENT_CURRENT);
@@ -144,6 +145,10 @@ public class ActivityMain extends AppCompatActivity {
 //        v25.1.0
         Menu menuBottom = navMain.getMenu();
         menuBottom.getItem((currentFragment) -1).setChecked(true);
+
+        int color = tabColors[currentFragment - 1];
+        navMain.setBackgroundColor(color);
+        tbMain.setBackgroundColor(color);
     }
 
     private void showImageSelector() {
@@ -153,13 +158,9 @@ public class ActivityMain extends AppCompatActivity {
         if ((fragment == null) || (!(fragment instanceof FragmentImageSelector))) {
             FragmentTransaction transaction = manager.beginTransaction();
             transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
-            transaction.replace(R.id.activity_main, new FragmentImageSelector(), FRAGMENT_CURRENT)
+            transaction.replace(R.id.frame_main, new FragmentImageSelector(), FRAGMENT_CURRENT)
                     .commit();
             currentFragment = FRAGMENT_IMAGE_SELECTOR;
-
-            int color = ContextCompat.getColor(this, R.color.colorImageSelector);
-            navMain.setBackgroundColor(color);
-            tbMain.setBackgroundColor(color);
         }
     }
 
@@ -170,13 +171,9 @@ public class ActivityMain extends AppCompatActivity {
         if ((fragment == null) || (!(fragment instanceof FragmentContactList))) {
             FragmentTransaction transaction = manager.beginTransaction();
             transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
-            transaction.replace(R.id.activity_main, new FragmentContactList(), FRAGMENT_CURRENT)
+            transaction.replace(R.id.frame_main, new FragmentContactList(), FRAGMENT_CURRENT)
                     .commit();
             currentFragment = FRAGMENT_CONTACT_LIST;
-
-            int color = ContextCompat.getColor(this, R.color.colorContactList);
-            navMain.setBackgroundColor(color);
-            tbMain.setBackgroundColor(color);
         }
     }
 
@@ -186,13 +183,9 @@ public class ActivityMain extends AppCompatActivity {
         if ((fragment == null) || (!(fragment instanceof FragmentRecyclerView))) {
             FragmentTransaction transaction = manager.beginTransaction();
             transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
-            transaction.replace(R.id.activity_main, new FragmentRecyclerView(), FRAGMENT_CURRENT)
+            transaction.replace(R.id.frame_main, new FragmentRecyclerView(), FRAGMENT_CURRENT)
                     .commit();
             currentFragment = FRAGMENT_RECYCLER_VIEW;
-
-            int color = ContextCompat.getColor(this, R.color.colorRecyclerView);
-            navMain.setBackgroundColor(color);
-            tbMain.setBackgroundColor(color);
         }
     }
 
@@ -203,13 +196,9 @@ public class ActivityMain extends AppCompatActivity {
 
             FragmentTransaction transaction = manager.beginTransaction();
             transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
-            transaction.replace(R.id.activity_main, new FragmentListView(), FRAGMENT_CURRENT)
+            transaction.replace(R.id.frame_main, new FragmentListView(), FRAGMENT_CURRENT)
                     .commit();
             currentFragment = FRAGMENT_LIST_VIEW;
-
-            int color = ContextCompat.getColor(this, R.color.colorListView);
-            navMain.setBackgroundColor(color);
-            tbMain.setBackgroundColor(color);
         }
     }
 

@@ -10,10 +10,8 @@
         android:id="@+id/image_selector"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize"
-        android:layout_marginBottom="56dp"
-        android:src="@drawable/img_select"
         android:contentDescription="@string/title_request_image"
+        android:src="@drawable/img_select"
         />
 
 </LinearLayout>
